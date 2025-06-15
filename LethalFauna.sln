@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LethalFauna", "LethalFauna.csproj", "{BE9012A9-A9FE-4C35-B9FC-F6C824410770}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE9012A9-A9FE-4C35-B9FC-F6C824410770}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE9012A9-A9FE-4C35-B9FC-F6C824410770}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE9012A9-A9FE-4C35-B9FC-F6C824410770}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE9012A9-A9FE-4C35-B9FC-F6C824410770}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C8CD9336-C866-400D-B9A3-466057675C7C}
+	EndGlobalSection
+EndGlobal
