@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e80ae96b3eb9177eea5c8f9dadbcda1, type: 3}
+  m_Name: SkunkBearTN
+  m_EditorClassIdentifier: 
+  displayText: "Skunk Bear\n\nSigurd's danger level: 75%\n\nScientific name: Mephitidae
+    ursidae\n\n The Skunk Bear is a large and for the most part, neutral beast, but
+    very dangerous nonetheless. The animal produces a strong smell that's toxic to
+    inhale and may cause mild illness. Other creatures keep their distance from it
+    to avoid the smell, meaning that if you are in proximity to a Skunk Bear, you
+    are less likely to be attacked by other outside monsters. There is a chance that
+    if you get too close to a Skunk Bear it likely will become aggressive though.
+    Skunk bears will wander forest and tundra moons searching for food, their favorite
+    being Bee Hives. If you are carrying a beehive or  scrap near a Skunk Bear, the
+    Skunk Bear may follow you curiously and become aggressive. They may also try
+    to enter your ship to steal scrap so if you see one, or begin to experience the
+    effects of its stench, it's best to close the ships doors. Although they are
+    mostly neutral in their behavior, their is a chance that a Skunk Bear encounter
+    results in an extremely aggressive animal. If you come across a Skunk Bear the
+    best way to survive the encounter is to immediately crouch. If you stand during
+    an encounter, the Skunk Bear will perceive you as a bigger threat and will more
+    likely try to kill you. They are quick for their size, so running isn't a viable
+    option unless you are close to the ship and can quickly shut yourself inside.
+    Skunk Bears are very hard to kill, but if you manage to do the job it's an impressive
+    feat. - Sigurd"
+  terminalEvent: 
+  clearPreviousText: 1
+  maxCharactersToType: 35
+  buyItemIndex: -1
+  buyVehicleIndex: 0
+  isConfirmationNode: 0
+  buyRerouteToMoon: -1
+  displayPlanetInfo: -1
+  shipUnlockableID: -1
+  buyUnlockable: 0
+  returnFromStorage: 0
+  itemCost: 0
+  creatureFileID: 7014
+  creatureName: SkunkBear
+  storyLogFileID: -1
+  overrideOptions: 0
+  acceptAnything: 0
+  terminalOptions: []
+  playClip: {fileID: 0}
+  playSyncedClip: 2
+  displayTexture: {fileID: 0}
+  displayVideo: {fileID: 32900000, guid: d2497e7aef1c8cd3eb8c03e57932f1b3, type: 3}
+  loadImageSlowly: 1
+  persistentImage: 0
