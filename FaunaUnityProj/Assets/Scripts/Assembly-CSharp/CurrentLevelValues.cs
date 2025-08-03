@@ -16,5 +16,5 @@ public class CurrentLevelValues
 	public int maxTotalScrapValue;
 
 	[Space(5f)]
-	public float levelSizeMultiplier;
+	public float levelSizeMultiplier = 0.6f;
 }

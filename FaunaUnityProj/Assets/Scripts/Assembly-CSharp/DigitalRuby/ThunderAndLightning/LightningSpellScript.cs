@@ -1,72 +1,10 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace DigitalRuby.ThunderAndLightning
 {
 	public abstract class LightningSpellScript : MonoBehaviour
 	{
-		[CompilerGenerated]
-		private sealed class _003CStopAfterSecondsCoRoutine_003Ed__19 : IEnumerator<object>, IEnumerator, IDisposable
-		{
-			private int _003C_003E1__state;
-
-			private object _003C_003E2__current;
-
-			public LightningSpellScript _003C_003E4__this;
-
-			public float seconds;
-
-			private int _003Ctoken_003E5__2;
-
-			object IEnumerator<object>.Current
-			{
-				[DebuggerHidden]
-				get
-				{
-					return null;
-				}
-			}
-
-			object IEnumerator.Current
-			{
-				[DebuggerHidden]
-				get
-				{
-					return null;
-				}
-			}
-
-			[DebuggerHidden]
-			public _003CStopAfterSecondsCoRoutine_003Ed__19(int _003C_003E1__state)
-			{
-			}
-
-			[DebuggerHidden]
-			void IDisposable.Dispose()
-			{
-			}
-
-			private bool MoveNext()
-			{
-				return false;
-			}
-
-			bool IEnumerator.MoveNext()
-			{
-				//ILSpy generated this explicit interface implementation from .override directive in MoveNext
-				return this.MoveNext();
-			}
-
-			[DebuggerHidden]
-			void IEnumerator.Reset()
-			{
-			}
-		}
-
 		[Header("Direction and distance")]
 		[Tooltip("The start point of the spell. Set this to a muzzle end or hand.")]
 		public GameObject SpellStart;
@@ -79,26 +17,26 @@ namespace DigitalRuby.ThunderAndLightning
 		public Vector3 Direction;
 
 		[Tooltip("The maximum distance of the spell")]
-		public float MaxDistance;
+		public float MaxDistance = 15f;
 
 		[Header("Collision")]
 		[Tooltip("Whether the collision is an exploision. If not explosion, collision is directional.")]
 		public bool CollisionIsExplosion;
 
 		[Tooltip("The radius of the collision explosion")]
-		public float CollisionRadius;
+		public float CollisionRadius = 1f;
 
 		[Tooltip("The force to explode with when there is a collision")]
-		public float CollisionForce;
+		public float CollisionForce = 50f;
 
 		[Tooltip("Collision force mode")]
-		public ForceMode CollisionForceMode;
+		public ForceMode CollisionForceMode = ForceMode.Impulse;
 
 		[Tooltip("The particle system for collisions. For best effects, this should emit particles in bursts at time 0 and not loop.")]
 		public ParticleSystem CollisionParticleSystem;
 
 		[Tooltip("The layers that the spell should collide with")]
-		public LayerMask CollisionMask;
+		public LayerMask CollisionMask = -1;
 
 		[Tooltip("Collision audio source")]
 		public AudioSource CollisionAudioSource;
@@ -107,7 +45,11 @@ namespace DigitalRuby.ThunderAndLightning
 		public AudioClip[] CollisionAudioClips;
 
 		[Tooltip("Collision sound volume range.")]
-		public RangeOfFloats CollisionVolumeRange;
+		public RangeOfFloats CollisionVolumeRange = new RangeOfFloats
+		{
+			Minimum = 0.4f,
+			Maximum = 0.6f
+		};
 
 		[Header("Duration and Cooldown")]
 		[Tooltip("The duration in seconds that the spell will last. Not all spells support a duration. For one shot spells, this is how long the spell cast / emission light, etc. will last.")]
@@ -128,67 +70,81 @@ namespace DigitalRuby.ThunderAndLightning
 
 		private int stopToken;
 
-		protected float DurationTimer
-		{
-			[CompilerGenerated]
-			get
-			{
-				return 0f;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		protected float DurationTimer { get; private set; }
 
-		protected float CooldownTimer
-		{
-			[CompilerGenerated]
-			get
-			{
-				return 0f;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		protected float CooldownTimer { get; private set; }
 
-		public bool Casting
+		public bool Casting { get; private set; }
+
+		public bool CanCastSpell
 		{
-			[CompilerGenerated]
 			get
 			{
+				if (!Casting)
+				{
+					return CooldownTimer <= 0f;
+				}
 				return false;
 			}
-			[CompilerGenerated]
-			private set
-			{
-			}
 		}
 
-		public bool CanCastSpell => false;
-
-		[IteratorStateMachine(typeof(_003CStopAfterSecondsCoRoutine_003Ed__19))]
 		private IEnumerator StopAfterSecondsCoRoutine(float seconds)
 		{
-			return null;
+			int token = stopToken;
+			yield return new WaitForSecondsLightning(seconds);
+			if (token == stopToken)
+			{
+				StopSpell();
+			}
 		}
 
 		protected void ApplyCollisionForce(Vector3 point)
 		{
+			if (!(CollisionForce > 0f) || !(CollisionRadius > 0f))
+			{
+				return;
+			}
+			Collider[] array = Physics.OverlapSphere(point, CollisionRadius, CollisionMask);
+			for (int i = 0; i < array.Length; i++)
+			{
+				Rigidbody component = array[i].GetComponent<Rigidbody>();
+				if (component != null)
+				{
+					if (CollisionIsExplosion)
+					{
+						component.AddExplosionForce(CollisionForce, point, CollisionRadius, CollisionForce * 0.02f, CollisionForceMode);
+					}
+					else
+					{
+						component.AddForce(CollisionForce * Direction, CollisionForceMode);
+					}
+				}
+			}
 		}
 
 		protected void PlayCollisionSound(Vector3 pos)
 		{
+			if (CollisionAudioSource != null && CollisionAudioClips != null && CollisionAudioClips.Length != 0)
+			{
+				int num = Random.Range(0, CollisionAudioClips.Length - 1);
+				float volumeScale = Random.Range(CollisionVolumeRange.Minimum, CollisionVolumeRange.Maximum);
+				CollisionAudioSource.transform.position = pos;
+				CollisionAudioSource.PlayOneShot(CollisionAudioClips[num], volumeScale);
+			}
 		}
 
 		protected virtual void Start()
 		{
+			if (EmissionLight != null)
+			{
+				EmissionLight.enabled = false;
+			}
 		}
 
 		protected virtual void Update()
 		{
+			CooldownTimer = Mathf.Max(0f, CooldownTimer - LightningBoltScript.DeltaTime);
+			DurationTimer = Mathf.Max(0f, DurationTimer - LightningBoltScript.DeltaTime);
 		}
 
 		protected virtual void LateUpdate()
@@ -213,27 +169,86 @@ namespace DigitalRuby.ThunderAndLightning
 
 		public bool CastSpell()
 		{
-			return false;
+			if (!CanCastSpell)
+			{
+				return false;
+			}
+			Casting = true;
+			DurationTimer = Duration;
+			CooldownTimer = Cooldown;
+			OnCastSpell();
+			if (Duration > 0f)
+			{
+				StopAfterSeconds(Duration);
+			}
+			if (EmissionParticleSystem != null)
+			{
+				EmissionParticleSystem.Play();
+			}
+			if (EmissionLight != null)
+			{
+				EmissionLight.transform.position = SpellStart.transform.position;
+				EmissionLight.enabled = true;
+			}
+			if (EmissionSound != null)
+			{
+				EmissionSound.Play();
+			}
+			return true;
 		}
 
 		public void StopSpell()
 		{
+			if (Casting)
+			{
+				stopToken++;
+				if (EmissionParticleSystem != null)
+				{
+					EmissionParticleSystem.Stop();
+				}
+				if (EmissionLight != null)
+				{
+					EmissionLight.enabled = false;
+				}
+				if (EmissionSound != null && EmissionSound.loop)
+				{
+					EmissionSound.Stop();
+				}
+				DurationTimer = 0f;
+				Casting = false;
+				OnStopSpell();
+			}
 		}
 
 		public void ActivateSpell()
 		{
+			OnActivated();
 		}
 
 		public void DeactivateSpell()
 		{
+			OnDeactivated();
 		}
 
 		public void StopAfterSeconds(float seconds)
 		{
+			StartCoroutine(StopAfterSecondsCoRoutine(seconds));
 		}
 
 		public static GameObject FindChildRecursively(Transform t, string name)
 		{
+			if (t.name == name)
+			{
+				return t.gameObject;
+			}
+			for (int i = 0; i < t.childCount; i++)
+			{
+				GameObject gameObject = FindChildRecursively(t.GetChild(i), name);
+				if (gameObject != null)
+				{
+					return gameObject;
+				}
+			}
 			return null;
 		}
 	}

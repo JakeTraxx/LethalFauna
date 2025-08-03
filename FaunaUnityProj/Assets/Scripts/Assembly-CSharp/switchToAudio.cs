@@ -12,5 +12,5 @@ public class switchToAudio
 
 	public bool changeAudioVolume;
 
-	public float audioVolume;
+	public float audioVolume = 1f;
 }

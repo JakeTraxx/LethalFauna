@@ -10,4 +10,7 @@ public class RandomScrapSpawn : MonoBehaviour
 	public bool spawnedItemsCopyPosition;
 
 	public bool spawnUsed;
+
+	[Space(5f)]
+	public Transform spawnWithParent;
 }

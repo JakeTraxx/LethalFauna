@@ -7,16 +7,20 @@ namespace DunGen
 	public class DoorwaySocket : ScriptableObject
 	{
 		[SerializeField]
-		private Vector2 size;
+		private Vector2 size = new Vector2(1f, 2f);
 
 		[Obsolete("Use DoorwayPairFinder.CustomConnectionRules instead")]
 		public static SocketConnectionDelegate CustomSocketConnectionDelegate;
 
-		public Vector2 Size => default(Vector2);
+		public Vector2 Size => size;
 
 		public static bool CanSocketsConnect(DoorwaySocket a, DoorwaySocket b)
 		{
-			return false;
+			if (CustomSocketConnectionDelegate != null)
+			{
+				return CustomSocketConnectionDelegate(a, b);
+			}
+			return a == b;
 		}
 	}
 }

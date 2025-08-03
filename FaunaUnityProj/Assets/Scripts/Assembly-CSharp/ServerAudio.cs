@@ -10,5 +10,11 @@ public struct ServerAudio : INetworkSerializable
 
 	public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
 	{
+		serializer.SerializeValue(ref audioObj, default(FastBufferWriter.ForNetworkSerializable));
+		serializer.SerializeValue(ref oneshot, default(FastBufferWriter.ForPrimitives));
+		if (!oneshot)
+		{
+			serializer.SerializeValue(ref looped, default(FastBufferWriter.ForPrimitives));
+		}
 	}
 }

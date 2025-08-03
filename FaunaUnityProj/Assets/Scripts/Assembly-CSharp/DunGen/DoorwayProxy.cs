@@ -1,123 +1,64 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace DunGen
 {
 	public sealed class DoorwayProxy
 	{
-		public bool Used => false;
+		public bool Used => ConnectedDoorway != null;
 
-		public TileProxy TileProxy
-		{
-			[CompilerGenerated]
-			get
-			{
-				return null;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public TileProxy TileProxy { get; private set; }
 
-		public int Index
-		{
-			[CompilerGenerated]
-			get
-			{
-				return 0;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public int Index { get; private set; }
 
-		public DoorwaySocket Socket
-		{
-			[CompilerGenerated]
-			get
-			{
-				return null;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public DoorwaySocket Socket { get; private set; }
 
-		public Doorway DoorwayComponent
-		{
-			[CompilerGenerated]
-			get
-			{
-				return null;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public Doorway DoorwayComponent { get; private set; }
 
-		public Vector3 LocalPosition
-		{
-			[CompilerGenerated]
-			get
-			{
-				return default(Vector3);
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public Vector3 LocalPosition { get; private set; }
 
-		public Quaternion LocalRotation
-		{
-			[CompilerGenerated]
-			get
-			{
-				return default(Quaternion);
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public Quaternion LocalRotation { get; private set; }
 
-		public DoorwayProxy ConnectedDoorway
-		{
-			[CompilerGenerated]
-			get
-			{
-				return null;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public DoorwayProxy ConnectedDoorway { get; private set; }
 
-		public Vector3 Forward => default(Vector3);
+		public Vector3 Forward => TileProxy.Placement.Rotation * LocalRotation * Vector3.forward;
 
-		public Vector3 Up => default(Vector3);
+		public Vector3 Up => TileProxy.Placement.Rotation * LocalRotation * Vector3.up;
 
-		public Vector3 Position => default(Vector3);
+		public Vector3 Position => TileProxy.Placement.Transform.MultiplyPoint(LocalPosition);
 
 		public DoorwayProxy(TileProxy tileProxy, DoorwayProxy other)
 		{
+			TileProxy = tileProxy;
+			Index = other.Index;
+			Socket = other.Socket;
+			DoorwayComponent = other.DoorwayComponent;
+			LocalPosition = other.LocalPosition;
+			LocalRotation = other.LocalRotation;
 		}
 
 		public DoorwayProxy(TileProxy tileProxy, int index, Doorway doorwayComponent, Vector3 localPosition, Quaternion localRotation)
 		{
+			TileProxy = tileProxy;
+			Index = index;
+			Socket = doorwayComponent.Socket;
+			DoorwayComponent = doorwayComponent;
+			LocalPosition = localPosition;
+			LocalRotation = localRotation;
 		}
 
 		public static void Connect(DoorwayProxy a, DoorwayProxy b)
 		{
+			a.ConnectedDoorway = b;
+			b.ConnectedDoorway = a;
 		}
 
 		public void Disconnect()
 		{
+			if (ConnectedDoorway != null)
+			{
+				ConnectedDoorway.ConnectedDoorway = null;
+				ConnectedDoorway = null;
+			}
 		}
 	}
 }

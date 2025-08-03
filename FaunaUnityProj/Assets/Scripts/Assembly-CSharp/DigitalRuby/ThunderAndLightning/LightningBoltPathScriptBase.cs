@@ -9,16 +9,29 @@ namespace DigitalRuby.ThunderAndLightning
 		[Tooltip("The game objects to follow for the lightning path")]
 		public List<GameObject> LightningPath;
 
-		private readonly List<GameObject> currentPathObjects;
+		private readonly List<GameObject> currentPathObjects = new List<GameObject>();
 
 		protected List<GameObject> GetCurrentPathObjects()
 		{
-			return null;
+			currentPathObjects.Clear();
+			if (LightningPath != null)
+			{
+				foreach (GameObject item in LightningPath)
+				{
+					if (item != null && item.activeInHierarchy)
+					{
+						currentPathObjects.Add(item);
+					}
+				}
+			}
+			return currentPathObjects;
 		}
 
 		protected override LightningBoltParameters OnCreateParameters()
 		{
-			return null;
+			LightningBoltParameters lightningBoltParameters = base.OnCreateParameters();
+			lightningBoltParameters.Generator = LightningGenerator.GeneratorInstance;
+			return lightningBoltParameters;
 		}
 	}
 }

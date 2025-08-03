@@ -3,21 +3,21 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObjects/CompanyMoodPreset", order = 2)]
 public class CompanyMood : ScriptableObject
 {
-	public float timeToWaitBeforeGrabbingItem;
+	public float timeToWaitBeforeGrabbingItem = 10f;
 
-	public float irritability;
+	public float irritability = 1f;
 
-	public float judgementSpeed;
+	public float judgementSpeed = 1f;
 
-	public float startingPatience;
+	public float startingPatience = 3f;
 
 	public bool desiresSilence;
 
 	public bool mustBeWokenUp;
 
-	public int maximumItemsToAnger;
+	public int maximumItemsToAnger = -1;
 
-	public float sensitivity;
+	public float sensitivity = 1f;
 
 	[Space(3f)]
 	public AudioClip noiseBehindWallSFX;
@@ -40,9 +40,9 @@ public class CompanyMood : ScriptableObject
 	[Space(5f)]
 	public CompanyMonster manifestation;
 
-	public int maxPlayersToKillBeforeSatisfied;
+	public int maxPlayersToKillBeforeSatisfied = 1;
 
 	public int[] enableMonsterAnimationIndex;
 
-	public float grabPlayerAnimationTime;
+	public float grabPlayerAnimationTime = 2f;
 }

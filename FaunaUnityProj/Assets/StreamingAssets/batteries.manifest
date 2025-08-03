@@ -1,0 +1,24 @@
+ManifestFileVersion: 0
+CRC: 1176317381
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: b98b90ec456602c8f0b9e1ac752954b5
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 137c15a16236da89168c8215a1e23a39
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: b98b90ec456602c8f0b9e1ac752954b5
+HashAppended: 0
+ClassTypes:
+- Class: 241
+  Script: {instanceID: 0}
+- Class: 243
+  Script: {instanceID: 0}
+- Class: 245
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AudioMixerController/Diagetic.mixer
+Dependencies: []

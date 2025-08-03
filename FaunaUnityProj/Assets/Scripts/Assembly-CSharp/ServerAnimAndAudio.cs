@@ -10,5 +10,8 @@ public struct ServerAnimAndAudio : INetworkSerializable
 
 	public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
 	{
+		serializer.SerializeValue(ref animationString);
+		serializer.SerializeValue(ref animatorObj, default(FastBufferWriter.ForNetworkSerializable));
+		serializer.SerializeValue(ref audioObj, default(FastBufferWriter.ForNetworkSerializable));
 	}
 }

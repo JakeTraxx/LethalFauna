@@ -8,7 +8,7 @@ namespace DunGen.Graph
 	{
 		public DungeonFlow Graph;
 
-		public List<TileSet> TileSets;
+		public List<TileSet> TileSets = new List<TileSet>();
 
 		public NodeType NodeType;
 
@@ -16,14 +16,15 @@ namespace DunGen.Graph
 
 		public string Label;
 
-		public List<KeyLockPlacement> Keys;
+		public List<KeyLockPlacement> Keys = new List<KeyLockPlacement>();
 
-		public List<KeyLockPlacement> Locks;
+		public List<KeyLockPlacement> Locks = new List<KeyLockPlacement>();
 
 		public NodeLockPlacement LockPlacement;
 
 		public GraphNode(DungeonFlow graph)
 		{
+			Graph = graph;
 		}
 	}
 }

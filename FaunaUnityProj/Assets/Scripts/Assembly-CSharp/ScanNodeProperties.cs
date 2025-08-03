@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class ScanNodeProperties : MonoBehaviour
 {
-	public int maxRange;
+	public int maxRange = 7;
 
-	public int minRange;
+	public int minRange = 5;
 
-	public bool requiresLineOfSight;
+	public bool requiresLineOfSight = true;
 
 	[Space(5f)]
 	public string headerText;
@@ -16,7 +16,7 @@ public class ScanNodeProperties : MonoBehaviour
 	public int scrapValue;
 
 	[Space(5f)]
-	public int creatureScanID;
+	public int creatureScanID = -1;
 
 	[Space(3f)]
 	public int nodeType;

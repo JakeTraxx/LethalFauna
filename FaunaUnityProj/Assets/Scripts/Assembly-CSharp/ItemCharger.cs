@@ -1,68 +1,9 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ItemCharger : MonoBehaviour
+public class ItemCharger : NetworkBehaviour
 {
-	[CompilerGenerated]
-	private sealed class _003CchargeItemDelayed_003Ed__7 : IEnumerator<object>, IEnumerator, IDisposable
-	{
-		private int _003C_003E1__state;
-
-		private object _003C_003E2__current;
-
-		public ItemCharger _003C_003E4__this;
-
-		public GrabbableObject itemToCharge;
-
-		object IEnumerator<object>.Current
-		{
-			[DebuggerHidden]
-			get
-			{
-				return null;
-			}
-		}
-
-		object IEnumerator.Current
-		{
-			[DebuggerHidden]
-			get
-			{
-				return null;
-			}
-		}
-
-		[DebuggerHidden]
-		public _003CchargeItemDelayed_003Ed__7(int _003C_003E1__state)
-		{
-		}
-
-		[DebuggerHidden]
-		void IDisposable.Dispose()
-		{
-		}
-
-		private bool MoveNext()
-		{
-			return false;
-		}
-
-		bool IEnumerator.MoveNext()
-		{
-			//ILSpy generated this explicit interface implementation from .override directive in MoveNext
-			return this.MoveNext();
-		}
-
-		[DebuggerHidden]
-		void IEnumerator.Reset()
-		{
-		}
-	}
-
 	public InteractTrigger triggerScript;
 
 	public Animator chargeStationAnimator;
@@ -75,15 +16,63 @@ public class ItemCharger : MonoBehaviour
 
 	public void ChargeItem()
 	{
+		GrabbableObject currentlyHeldObjectServer = GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer;
+		if (!(currentlyHeldObjectServer == null) && currentlyHeldObjectServer.itemProperties.requiresBattery)
+		{
+			PlayChargeItemEffectServerRpc((int)GameNetworkManager.Instance.localPlayerController.playerClientId);
+			if (chargeItemCoroutine != null)
+			{
+				StopCoroutine(chargeItemCoroutine);
+			}
+			chargeItemCoroutine = StartCoroutine(chargeItemDelayed(currentlyHeldObjectServer));
+		}
 	}
 
 	private void Update()
 	{
+		if (NetworkManager.Singleton == null)
+		{
+			return;
+		}
+		if (updateInterval > 1f)
+		{
+			updateInterval = 0f;
+			if (GameNetworkManager.Instance != null && GameNetworkManager.Instance.localPlayerController != null)
+			{
+				triggerScript.interactable = GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer != null && GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer.itemProperties.requiresBattery;
+			}
+		}
+		else
+		{
+			updateInterval += Time.deltaTime;
+		}
 	}
 
-	[IteratorStateMachine(typeof(_003CchargeItemDelayed_003Ed__7))]
 	private IEnumerator chargeItemDelayed(GrabbableObject itemToCharge)
 	{
-		return null;
+		zapAudio.Play();
+		yield return new WaitForSeconds(0.75f);
+		chargeStationAnimator.SetTrigger("zap");
+		if (itemToCharge != null)
+		{
+			itemToCharge.insertedBattery = new Battery(isEmpty: false, 1f);
+			itemToCharge.SyncBatteryServerRpc(100);
+		}
 	}
-}
+
+	[ServerRpc(RequireOwnership = false)]
+	public void PlayChargeItemEffectServerRpc(int playerChargingItem)
+			{
+				PlayChargeItemEffectClientRpc(playerChargingItem);
+			}
+
+	[ClientRpc]
+	public void PlayChargeItemEffectClientRpc(int playerChargingItem)
+{if(!(GameNetworkManager.Instance.localPlayerController == null) && (int)GameNetworkManager.Instance.localPlayerController.playerClientId != playerChargingItem)		{
+			if (chargeItemCoroutine != null)
+			{
+				StopCoroutine(chargeItemCoroutine);
+			}
+			chargeItemCoroutine = StartCoroutine(chargeItemDelayed(null));
+		}
+}}

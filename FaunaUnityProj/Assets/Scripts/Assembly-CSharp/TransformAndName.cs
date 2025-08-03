@@ -12,5 +12,8 @@ public class TransformAndName
 
 	public TransformAndName(Transform newTransform, string newName, bool nonPlayer = false)
 	{
+		name = newName;
+		transform = newTransform;
+		isNonPlayer = nonPlayer;
 	}
 }

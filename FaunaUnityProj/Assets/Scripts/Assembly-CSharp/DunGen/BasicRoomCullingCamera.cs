@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -16,6 +13,12 @@ namespace DunGen
 			public Renderer Renderer;
 
 			public bool Enabled;
+
+			public RendererData(Renderer renderer, bool enabled)
+			{
+				Renderer = renderer;
+				Enabled = enabled;
+			}
 		}
 
 		protected struct LightData
@@ -23,6 +26,12 @@ namespace DunGen
 			public Light Light;
 
 			public bool Enabled;
+
+			public LightData(Light light, bool enabled)
+			{
+				Light = light;
+				Enabled = enabled;
+			}
 		}
 
 		protected struct ReflectionProbeData
@@ -30,93 +39,23 @@ namespace DunGen
 			public ReflectionProbe Probe;
 
 			public bool Enabled;
-		}
 
-		[CompilerGenerated]
-		private sealed class _003CGetAllDoorsInDungeon_003Ed__38 : IEnumerable<Door>, IEnumerable, IEnumerator<Door>, IEnumerator, IDisposable
-		{
-			private int _003C_003E1__state;
-
-			private Door _003C_003E2__current;
-
-			private int _003C_003El__initialThreadId;
-
-			private Dungeon dungeon;
-
-			public Dungeon _003C_003E3__dungeon;
-
-			private IEnumerator<GameObject> _003C_003E7__wrap1;
-
-			Door IEnumerator<Door>.Current
+			public ReflectionProbeData(ReflectionProbe probe, bool enabled)
 			{
-				[DebuggerHidden]
-				get
-				{
-					return null;
-				}
-			}
-
-			object IEnumerator.Current
-			{
-				[DebuggerHidden]
-				get
-				{
-					return null;
-				}
-			}
-
-			[DebuggerHidden]
-			public _003CGetAllDoorsInDungeon_003Ed__38(int _003C_003E1__state)
-			{
-			}
-
-			[DebuggerHidden]
-			void IDisposable.Dispose()
-			{
-			}
-
-			private bool MoveNext()
-			{
-				return false;
-			}
-
-			bool IEnumerator.MoveNext()
-			{
-				//ILSpy generated this explicit interface implementation from .override directive in MoveNext
-				return this.MoveNext();
-			}
-
-			private void _003C_003Em__Finally1()
-			{
-			}
-
-			[DebuggerHidden]
-			void IEnumerator.Reset()
-			{
-			}
-
-			[DebuggerHidden]
-			IEnumerator<Door> IEnumerable<Door>.GetEnumerator()
-			{
-				return null;
-			}
-
-			[DebuggerHidden]
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return null;
+				Probe = probe;
+				Enabled = enabled;
 			}
 		}
 
-		public int AdjacentTileDepth;
+		public int AdjacentTileDepth = 1;
 
-		public bool CullBehindClosedDoors;
+		public bool CullBehindClosedDoors = true;
 
 		public Transform TargetOverride;
 
 		public bool CullInEditor;
 
-		public bool CullLights;
+		public bool CullLights = true;
 
 		protected bool isCulling;
 
@@ -132,99 +71,319 @@ namespace DunGen
 
 		protected List<Tile> visibleTiles;
 
-		protected Dictionary<Tile, List<RendererData>> rendererVisibilities;
+		protected Dictionary<Tile, List<RendererData>> rendererVisibilities = new Dictionary<Tile, List<RendererData>>();
 
-		protected Dictionary<Tile, List<LightData>> lightVisibilities;
+		protected Dictionary<Tile, List<LightData>> lightVisibilities = new Dictionary<Tile, List<LightData>>();
 
-		protected Dictionary<Tile, List<ReflectionProbeData>> reflectionProbeVisibilities;
+		protected Dictionary<Tile, List<ReflectionProbeData>> reflectionProbeVisibilities = new Dictionary<Tile, List<ReflectionProbeData>>();
 
-		protected Dictionary<Door, List<RendererData>> doorRendererVisibilities;
+		protected Dictionary<Door, List<RendererData>> doorRendererVisibilities = new Dictionary<Door, List<RendererData>>();
 
-		public bool IsReady
-		{
-			[CompilerGenerated]
-			get
-			{
-				return false;
-			}
-			[CompilerGenerated]
-			protected set
-			{
-			}
-		}
+		public bool IsReady { get; protected set; }
 
 		protected virtual void Awake()
 		{
+			RuntimeDungeon runtimeDungeon = UnityEngine.Object.FindObjectOfType<RuntimeDungeon>();
+			if (runtimeDungeon != null)
+			{
+				generator = runtimeDungeon.Generator;
+				generator.OnGenerationStatusChanged += OnDungeonGenerationStatusChanged;
+				if (generator.Status == GenerationStatus.Complete)
+				{
+					SetDungeon(generator.CurrentDungeon);
+				}
+			}
 		}
 
 		protected virtual void OnDestroy()
 		{
+			if (generator != null)
+			{
+				generator.OnGenerationStatusChanged -= OnDungeonGenerationStatusChanged;
+			}
 		}
 
 		protected virtual void OnEnable()
 		{
+			if (RenderPipelineManager.currentPipeline != null)
+			{
+				RenderPipelineManager.beginCameraRendering += OnBeginCameraRendering;
+				RenderPipelineManager.endCameraRendering += OnEndCameraRendering;
+			}
+			else
+			{
+				Camera.onPreCull = (Camera.CameraCallback)Delegate.Combine(Camera.onPreCull, new Camera.CameraCallback(EnableCulling));
+				Camera.onPostRender = (Camera.CameraCallback)Delegate.Combine(Camera.onPostRender, new Camera.CameraCallback(DisableCulling));
+			}
 		}
 
 		protected virtual void OnDisable()
 		{
+			RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;
+			RenderPipelineManager.endCameraRendering -= OnEndCameraRendering;
+			Camera.onPreCull = (Camera.CameraCallback)Delegate.Remove(Camera.onPreCull, new Camera.CameraCallback(EnableCulling));
+			Camera.onPostRender = (Camera.CameraCallback)Delegate.Remove(Camera.onPostRender, new Camera.CameraCallback(DisableCulling));
 		}
 
 		private void OnBeginCameraRendering(ScriptableRenderContext context, Camera camera)
 		{
+			EnableCulling(camera);
 		}
 
 		private void OnEndCameraRendering(ScriptableRenderContext context, Camera camera)
 		{
+			DisableCulling(camera);
 		}
 
 		protected virtual void OnDungeonGenerationStatusChanged(DungeonGenerator generator, GenerationStatus status)
 		{
+			switch (status)
+			{
+			case GenerationStatus.Complete:
+				SetDungeon(generator.CurrentDungeon);
+				break;
+			case GenerationStatus.Failed:
+				ClearDungeon();
+				break;
+			}
 		}
 
 		protected virtual void EnableCulling(Camera camera)
 		{
+			SetCullingEnabled(camera, enabled: true);
 		}
 
 		protected virtual void DisableCulling(Camera camera)
 		{
+			SetCullingEnabled(camera, enabled: false);
 		}
 
 		protected void SetCullingEnabled(Camera camera, bool enabled)
 		{
+			if (IsReady && camera.gameObject == base.gameObject)
+			{
+				SetIsCulling(enabled);
+			}
 		}
 
 		protected virtual void LateUpdate()
 		{
+			if (!IsReady)
+			{
+				return;
+			}
+			Transform transform = ((TargetOverride != null) ? TargetOverride : base.transform);
+			if (currentTile == null || !currentTile.Bounds.Contains(transform.position))
+			{
+				foreach (Tile allTile in allTiles)
+				{
+					if (!(allTile == null) && allTile.Bounds.Contains(transform.position))
+					{
+						currentTile = allTile;
+						break;
+					}
+				}
+				isDirty = true;
+			}
+			if (!isDirty)
+			{
+				return;
+			}
+			UpdateCulling();
+			foreach (Tile allTile2 in allTiles)
+			{
+				if (!visibleTiles.Contains(allTile2))
+				{
+					UpdateRendererList(allTile2);
+				}
+			}
 		}
 
 		protected void UpdateRendererList(Tile tile)
 		{
+			if (!rendererVisibilities.TryGetValue(tile, out var value))
+			{
+				value = (rendererVisibilities[tile] = new List<RendererData>());
+			}
+			else
+			{
+				value.Clear();
+			}
+			Renderer[] componentsInChildren = tile.GetComponentsInChildren<Renderer>();
+			foreach (Renderer renderer in componentsInChildren)
+			{
+				value.Add(new RendererData(renderer, renderer.enabled));
+			}
+			if (CullLights)
+			{
+				if (!lightVisibilities.TryGetValue(tile, out var value2))
+				{
+					value2 = (lightVisibilities[tile] = new List<LightData>());
+				}
+				else
+				{
+					value2.Clear();
+				}
+				Light[] componentsInChildren2 = tile.GetComponentsInChildren<Light>();
+				foreach (Light light in componentsInChildren2)
+				{
+					value2.Add(new LightData(light, light.enabled));
+				}
+			}
+			if (!reflectionProbeVisibilities.TryGetValue(tile, out var value3))
+			{
+				value3 = (reflectionProbeVisibilities[tile] = new List<ReflectionProbeData>());
+			}
+			else
+			{
+				value3.Clear();
+			}
+			ReflectionProbe[] componentsInChildren3 = tile.GetComponentsInChildren<ReflectionProbe>();
+			foreach (ReflectionProbe reflectionProbe in componentsInChildren3)
+			{
+				value3.Add(new ReflectionProbeData(reflectionProbe, reflectionProbe.enabled));
+			}
 		}
 
 		protected void SetIsCulling(bool isCulling)
 		{
+			this.isCulling = isCulling;
+			for (int i = 0; i < allTiles.Count; i++)
+			{
+				Tile tile = allTiles[i];
+				if (visibleTiles.Contains(tile))
+				{
+					continue;
+				}
+				if (rendererVisibilities.TryGetValue(tile, out var value))
+				{
+					foreach (RendererData item in value)
+					{
+						item.Renderer.enabled = !isCulling && item.Enabled;
+					}
+				}
+				if (CullLights && lightVisibilities.TryGetValue(tile, out var value2))
+				{
+					foreach (LightData item2 in value2)
+					{
+						item2.Light.enabled = !isCulling && item2.Enabled;
+					}
+				}
+				if (!reflectionProbeVisibilities.TryGetValue(tile, out var value3))
+				{
+					continue;
+				}
+				foreach (ReflectionProbeData item3 in value3)
+				{
+					item3.Probe.enabled = !isCulling && item3.Enabled;
+				}
+			}
+			foreach (Door allDoor in allDoors)
+			{
+				bool flag = visibleTiles.Contains(allDoor.DoorwayA.Tile) || visibleTiles.Contains(allDoor.DoorwayB.Tile);
+				if (!doorRendererVisibilities.TryGetValue(allDoor, out var value4))
+				{
+					continue;
+				}
+				foreach (RendererData item4 in value4)
+				{
+					item4.Renderer.enabled = (isCulling ? flag : item4.Enabled);
+				}
+			}
 		}
 
 		protected void UpdateCulling()
 		{
+			isDirty = false;
+			visibleTiles.Clear();
+			if (currentTile != null)
+			{
+				visibleTiles.Add(currentTile);
+			}
+			int num = 0;
+			for (int i = 0; i < AdjacentTileDepth; i++)
+			{
+				int count = visibleTiles.Count;
+				for (int j = num; j < count; j++)
+				{
+					foreach (Doorway usedDoorway in visibleTiles[j].UsedDoorways)
+					{
+						Tile tile = usedDoorway.ConnectedDoorway.Tile;
+						if (visibleTiles.Contains(tile))
+						{
+							continue;
+						}
+						if (CullBehindClosedDoors)
+						{
+							Door doorComponent = usedDoorway.DoorComponent;
+							if (doorComponent != null && doorComponent.ShouldCullBehind)
+							{
+								continue;
+							}
+						}
+						visibleTiles.Add(tile);
+					}
+				}
+				num = count;
+			}
 		}
 
 		public void SetDungeon(Dungeon dungeon)
 		{
+			if (IsReady)
+			{
+				ClearDungeon();
+			}
+			if (dungeon == null)
+			{
+				return;
+			}
+			allTiles = new List<Tile>(dungeon.AllTiles);
+			allDoors = new List<Door>(GetAllDoorsInDungeon(dungeon));
+			visibleTiles = new List<Tile>(allTiles.Count);
+			doorRendererVisibilities.Clear();
+			foreach (Door allDoor in allDoors)
+			{
+				List<RendererData> list = new List<RendererData>();
+				doorRendererVisibilities[allDoor] = list;
+				Renderer[] componentsInChildren = allDoor.GetComponentsInChildren<Renderer>(includeInactive: true);
+				foreach (Renderer renderer in componentsInChildren)
+				{
+					list.Add(new RendererData(renderer, renderer.enabled));
+				}
+				allDoor.OnDoorStateChanged += OnDoorStateChanged;
+			}
+			IsReady = true;
+			isDirty = true;
 		}
 
-		[IteratorStateMachine(typeof(_003CGetAllDoorsInDungeon_003Ed__38))]
 		protected IEnumerable<Door> GetAllDoorsInDungeon(Dungeon dungeon)
 		{
-			return null;
+			foreach (GameObject door in dungeon.Doors)
+			{
+				if (!(door == null))
+				{
+					Door component = door.GetComponent<Door>();
+					if (component != null)
+					{
+						yield return component;
+					}
+				}
+			}
 		}
 
 		protected virtual void ClearDungeon()
 		{
+			foreach (Door allDoor in allDoors)
+			{
+				allDoor.OnDoorStateChanged -= OnDoorStateChanged;
+			}
+			IsReady = false;
 		}
 
 		protected virtual void OnDoorStateChanged(Door door, bool isOpen)
 		{
+			isDirty = true;
 		}
 	}
 }

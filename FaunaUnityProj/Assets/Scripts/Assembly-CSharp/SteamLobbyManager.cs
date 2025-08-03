@@ -1,116 +1,14 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Linq;
+using Steamworks;
 using Steamworks.Data;
 using Steamworks.ServerList;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SteamLobbyManager : MonoBehaviour
 {
-	[StructLayout(LayoutKind.Auto)]
-	[CompilerGenerated]
-	private struct _003CLoadServerList_003Ed__14 : IAsyncStateMachine
-	{
-		public int _003C_003E1__state;
-
-		public AsyncVoidMethodBuilder _003C_003Et__builder;
-
-		public SteamLobbyManager _003C_003E4__this;
-
-		private TaskAwaiter<Lobby[]> _003C_003Eu__1;
-
-		private void MoveNext()
-		{
-		}
-
-		void IAsyncStateMachine.MoveNext()
-		{
-			//ILSpy generated this explicit interface implementation from .override directive in MoveNext
-			this.MoveNext();
-		}
-
-		[DebuggerHidden]
-		private void SetStateMachine(IAsyncStateMachine stateMachine)
-		{
-		}
-
-		void IAsyncStateMachine.SetStateMachine(IAsyncStateMachine stateMachine)
-		{
-			//ILSpy generated this explicit interface implementation from .override directive in SetStateMachine
-			this.SetStateMachine(stateMachine);
-		}
-	}
-
-	[CompilerGenerated]
-	private sealed class _003CloadLobbyListAndFilter_003Ed__15 : IEnumerator<object>, IEnumerator, IDisposable
-	{
-		private int _003C_003E1__state;
-
-		private object _003C_003E2__current;
-
-		public SteamLobbyManager _003C_003E4__this;
-
-		private string[] _003CoffensiveWords_003E5__2;
-
-		private int _003Ci_003E5__3;
-
-		private string _003ClobbyName_003E5__4;
-
-		private string _003ClobbyNameNoCapitals_003E5__5;
-
-		private bool _003CnameIsOffensive_003E5__6;
-
-		private int _003Cb_003E5__7;
-
-		object IEnumerator<object>.Current
-		{
-			[DebuggerHidden]
-			get
-			{
-				return null;
-			}
-		}
-
-		object IEnumerator.Current
-		{
-			[DebuggerHidden]
-			get
-			{
-				return null;
-			}
-		}
-
-		[DebuggerHidden]
-		public _003CloadLobbyListAndFilter_003Ed__15(int _003C_003E1__state)
-		{
-		}
-
-		[DebuggerHidden]
-		void IDisposable.Dispose()
-		{
-		}
-
-		private bool MoveNext()
-		{
-			return false;
-		}
-
-		bool IEnumerator.MoveNext()
-		{
-			//ILSpy generated this explicit interface implementation from .override directive in MoveNext
-			return this.MoveNext();
-		}
-
-		[DebuggerHidden]
-		void IEnumerator.Reset()
-		{
-		}
-	}
-
 	private Internet Request;
 
 	private Lobby[] currentLobbyList;
@@ -121,44 +19,202 @@ public class SteamLobbyManager : MonoBehaviour
 
 	public GameObject LobbySlotPrefab;
 
+	public GameObject LobbySlotPrefabChallenge;
+
 	private float lobbySlotPositionOffset;
 
-	public int sortByDistanceSetting;
+	public int sortByDistanceSetting = 2;
 
 	private float refreshServerListTimer;
 
-	public bool censorOffensiveLobbyNames;
+	public bool censorOffensiveLobbyNames = true;
 
 	private Coroutine loadLobbyListCoroutine;
 
-	private void Start()
+	public UnityEngine.UI.Image sortWithChallengeMoonsCheckbox;
+
+	private bool sortWithChallengeMoons = true;
+
+	public TMP_InputField serverTagInputField;
+
+	public void ToggleSortWithChallengeMoons()
 	{
+		sortWithChallengeMoons = !sortWithChallengeMoons;
+		sortWithChallengeMoonsCheckbox.enabled = sortWithChallengeMoons;
 	}
 
 	public void ChangeDistanceSort(int newValue)
 	{
+		sortByDistanceSetting = newValue;
+	}
+
+	private void OnEnable()
+	{
+		serverTagInputField.text = string.Empty;
 	}
 
 	private void DebugLogServerList()
 	{
+		if (currentLobbyList != null)
+		{
+			for (int i = 0; i < currentLobbyList.Length; i++)
+			{
+				Debug.Log($"Lobby #{i} id: {currentLobbyList[i].Id}; members: {currentLobbyList[i].MemberCount}");
+				uint ip = 0u;
+				ushort port = 0;
+				SteamId serverId = default(SteamId);
+				Debug.Log($"Is lobby #{i} valid?: {currentLobbyList[i].GetGameServer(ref ip, ref port, ref serverId)}");
+			}
+		}
+		else
+		{
+			Debug.Log("Server list null");
+		}
 	}
 
 	public void RefreshServerListButton()
 	{
+		if (!(refreshServerListTimer < 0.5f))
+		{
+			LoadServerList();
+		}
 	}
 
-	[AsyncStateMachine(typeof(_003CLoadServerList_003Ed__14))]
-	public void LoadServerList()
+	public async void LoadServerList()
 	{
+		if (GameNetworkManager.Instance.waitingForLobbyDataRefresh)
+		{
+			return;
+		}
+		if (loadLobbyListCoroutine != null)
+		{
+			StopCoroutine(loadLobbyListCoroutine);
+		}
+		refreshServerListTimer = 0f;
+		serverListBlankText.text = "Loading server list...";
+		currentLobbyList = null;
+		LobbySlot[] array = Object.FindObjectsOfType<LobbySlot>();
+		for (int i = 0; i < array.Length; i++)
+		{
+			Object.Destroy(array[i].gameObject);
+		}
+		SteamMatchmaking.LobbyList.WithMaxResults(20);
+		SteamMatchmaking.LobbyList.WithKeyValue("started", "0");
+		SteamMatchmaking.LobbyList.WithKeyValue("versNum", GameNetworkManager.Instance.gameVersionNum.ToString());
+		SteamMatchmaking.LobbyList.WithSlotsAvailable(1);
+		switch (sortByDistanceSetting)
+		{
+		case 0:
+			SteamMatchmaking.LobbyList.FilterDistanceClose();
+			break;
+		case 1:
+			SteamMatchmaking.LobbyList.FilterDistanceFar();
+			break;
+		case 2:
+			SteamMatchmaking.LobbyList.FilterDistanceWorldwide();
+			break;
+		}
+		currentLobbyList = null;
+		Debug.Log("Requested server list");
+		GameNetworkManager.Instance.waitingForLobbyDataRefresh = true;
+		SteamMatchmaking.LobbyList.WithSlotsAvailable(1);
+		LobbyQuery lobbyQuery = sortByDistanceSetting switch
+		{
+			0 => SteamMatchmaking.LobbyList.FilterDistanceClose().WithSlotsAvailable(1).WithKeyValue("vers", GameNetworkManager.Instance.gameVersionNum.ToString()), 
+			1 => SteamMatchmaking.LobbyList.FilterDistanceFar().WithSlotsAvailable(1).WithKeyValue("vers", GameNetworkManager.Instance.gameVersionNum.ToString()), 
+			_ => SteamMatchmaking.LobbyList.FilterDistanceWorldwide().WithSlotsAvailable(1).WithKeyValue("vers", GameNetworkManager.Instance.gameVersionNum.ToString()), 
+		};
+		if (!sortWithChallengeMoons)
+		{
+			lobbyQuery = lobbyQuery.WithKeyValue("chal", "f");
+		}
+		currentLobbyList = await ((!(serverTagInputField.text != string.Empty)) ? lobbyQuery.WithKeyValue("tag", "none") : lobbyQuery.WithKeyValue("tag", serverTagInputField.text.Substring(0, Mathf.Min(19, serverTagInputField.text.Length)).ToLower())).RequestAsync();
+		GameNetworkManager.Instance.waitingForLobbyDataRefresh = false;
+		if (currentLobbyList != null)
+		{
+			if (currentLobbyList.Length == 0)
+			{
+				serverListBlankText.text = "No available servers to join.";
+			}
+			else
+			{
+				serverListBlankText.text = "";
+			}
+			lobbySlotPositionOffset = 0f;
+			loadLobbyListCoroutine = StartCoroutine(loadLobbyListAndFilter(currentLobbyList));
+		}
+		else
+		{
+			Debug.Log("Lobby list is null after request.");
+			serverListBlankText.text = "No available servers to join.";
+		}
 	}
 
-	[IteratorStateMachine(typeof(_003CloadLobbyListAndFilter_003Ed__15))]
 	private IEnumerator loadLobbyListAndFilter(Lobby[] lobbyList)
 	{
-		return null;
+		string[] offensiveWords = new string[26]
+		{
+			"nigger", "faggot", "n1g", "nigers", "cunt", "pussies", "pussy", "minors", "children", "kids",
+			"chink", "buttrape", "molest", "rape", "coon", "negro", "beastiality", "cocks", "cumshot", "ejaculate",
+			"pedophile", "furfag", "necrophilia", "yiff", "sex", "porn"
+		};
+		for (int i = 0; i < lobbyList.Length; i++)
+		{
+			Friend[] array = SteamFriends.GetBlocked().ToArray();
+			if (array != null)
+			{
+				for (int j = 0; j < array.Length; j++)
+				{
+					Debug.Log($"blocked user: {array[j].Name}; id: {array[j].Id}");
+					lobbyList[i].IsOwnedBy(array[j].Id);
+				}
+			}
+			else
+			{
+				Debug.Log("Blocked users list is null");
+			}
+			string lobbyName = lobbyList[i].GetData("name");
+			if (lobbyName.Length == 0)
+			{
+				Debug.Log("lobby name is length of 0, skipping");
+				continue;
+			}
+			string lobbyNameNoCapitals = lobbyName.ToLower();
+			if (censorOffensiveLobbyNames)
+			{
+				bool nameIsOffensive = false;
+				for (int b = 0; b < offensiveWords.Length; b++)
+				{
+					if (lobbyNameNoCapitals.Contains(offensiveWords[b]))
+					{
+						nameIsOffensive = true;
+						break;
+					}
+					if (b % 5 == 0)
+					{
+						yield return null;
+					}
+				}
+				if (nameIsOffensive)
+				{
+					Debug.Log("Lobby name is offensive: " + lobbyNameNoCapitals + "; skipping");
+					continue;
+				}
+			}
+			GameObject original = ((!(lobbyList[i].GetData("chal") == "t")) ? LobbySlotPrefab : LobbySlotPrefabChallenge);
+			GameObject obj = Object.Instantiate(original, levelListContainer);
+			obj.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 0f + lobbySlotPositionOffset);
+			lobbySlotPositionOffset -= 42f;
+			LobbySlot componentInChildren = obj.GetComponentInChildren<LobbySlot>();
+			componentInChildren.LobbyName.text = lobbyName.Substring(0, Mathf.Min(lobbyName.Length, 40));
+			componentInChildren.playerCount.text = $"{lobbyList[i].MemberCount} / 4";
+			componentInChildren.lobbyId = lobbyList[i].Id;
+			componentInChildren.thisLobby = lobbyList[i];
+		}
 	}
 
 	private void Update()
 	{
+		refreshServerListTimer += Time.deltaTime;
 	}
 }

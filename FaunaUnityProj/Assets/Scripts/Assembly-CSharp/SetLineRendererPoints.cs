@@ -10,9 +10,12 @@ public class SetLineRendererPoints : MonoBehaviour
 
 	private void Start()
 	{
+		lineRenderer = base.gameObject.GetComponent<LineRenderer>();
 	}
 
 	private void LateUpdate()
 	{
+		lineRenderer.SetPosition(0, anchor.position);
+		lineRenderer.SetPosition(1, target.position);
 	}
 }

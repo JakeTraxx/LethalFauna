@@ -8,16 +8,17 @@ namespace DunGen.Tags
 	public sealed class Tag : IEqualityComparer<Tag>
 	{
 		[SerializeField]
-		private int id;
+		private int id = -1;
 
 		public int ID
 		{
 			get
 			{
-				return 0;
+				return id;
 			}
 			set
 			{
+				id = value;
 			}
 		}
 
@@ -25,54 +26,90 @@ namespace DunGen.Tags
 		{
 			get
 			{
-				return null;
+				return DunGenSettings.Instance.TagManager.TryGetNameFromID(id);
 			}
 			set
 			{
+				DunGenSettings.Instance.TagManager.TryRenameTag(id, value);
 			}
 		}
 
 		public Tag(int id)
 		{
+			this.id = id;
 		}
 
 		public Tag(string name)
 		{
+			DunGenSettings.Instance.TagManager.TagExists(name, out id);
 		}
 
 		public override bool Equals(object obj)
 		{
-			return false;
+			if (obj == null)
+			{
+				return false;
+			}
+			Tag tag = obj as Tag;
+			if (tag == null)
+			{
+				return false;
+			}
+			return Equals(this, tag);
 		}
 
 		public override int GetHashCode()
 		{
-			return 0;
+			return id;
 		}
 
 		public override string ToString()
 		{
-			return null;
+			return $"[{id}] {DunGenSettings.Instance.TagManager.TryGetNameFromID(id)}";
 		}
 
 		public int GetHashCode(Tag tag)
 		{
-			return 0;
+			return id;
 		}
 
 		public bool Equals(Tag x, Tag y)
 		{
-			return false;
+			if (x == null && y == null)
+			{
+				return true;
+			}
+			if (x == null || y == null)
+			{
+				return false;
+			}
+			return x.id == y.id;
 		}
 
 		public static bool operator ==(Tag a, Tag b)
 		{
-			return false;
+			if ((object)a == null && (object)b == null)
+			{
+				return true;
+			}
+			if ((object)a == null || (object)b == null)
+			{
+				return false;
+			}
+			return a.id == b.id;
 		}
 
 		public static bool operator !=(Tag a, Tag b)
 		{
-			return false;
+			if (a == null && b == null)
+			{
+				return false;
+			}
+			if (a == null && b != null)
+			{
+				return true;
+			}
+			return a.id != b.id;
 		}
 	}
 }

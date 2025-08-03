@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using BepInEx.Logging;
 using HarmonyLib;
 using LethalLib.Modules;
 using UnityEngine;
@@ -17,15 +16,12 @@ namespace LethalFauna
         readonly Harmony harmony = new Harmony(mGUID);
 
         internal static LethalFaunaMod instance;
-        internal static ManualLogSource log;
         internal static AssetBundle bundle;
 
         void Awake()
         {
             if (instance == null)
                 instance = this;
-
-            log = Logger;
 
             ConfigManager.Init();
 
@@ -54,15 +50,6 @@ namespace LethalFauna
                     var watcherHarpyTK = bundle.LoadAsset<TerminalKeyword>("Assets/LethalFauna/WatcherHarpy/Bestiary/WatcherHarpyTK.asset");
                     NetworkPrefabs.RegisterNetworkPrefab(wh.enemyPrefab);
                     LethalLib.Modules.Enemies.RegisterEnemy(wh, 100, Levels.LevelTypes.All, watcherHarpyTN, watcherHarpyTK);
-                }
-                if (ConfigManager.enableScribe.Value)
-                {
-                    var scr = bundle.LoadAsset<EnemyType>("Assets/LethalFauna/Scribe/Scribe.asset");
-                    var scribeTN = bundle.LoadAsset<TerminalNode>("Assets/LethalFauna/Scribe/Bestiary/ScribeTN.asset");
-                    var scribeTK = bundle.LoadAsset<TerminalKeyword>("Assets/LethalFauna/Scribe/Bestiary/ScribeTK.asset");
-                    Utilities.FixMixerGroups(scr.enemyPrefab);
-                    NetworkPrefabs.RegisterNetworkPrefab(scr.enemyPrefab);
-                    LethalLib.Modules.Enemies.RegisterEnemy(scr, 100, Levels.LevelTypes.All, scribeTN, scribeTK);
                 }
             }
             else

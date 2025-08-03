@@ -6,7 +6,7 @@ public class BaboonHawkGroup
 
 	public BaboonBirdAI leader;
 
-	public List<BaboonBirdAI> members;
+	public List<BaboonBirdAI> members = new List<BaboonBirdAI>();
 
 	public float timeAtLastCallToGroup;
 }

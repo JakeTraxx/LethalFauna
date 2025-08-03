@@ -31,12 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <GameFolder Condition="'$(GameFolder)' == ''">FaunaUnityProj\Assets\Plugins\</GameFolder>
+    <GameFolder Condition="'$(GameFolder)' == ''">C:\Users\brend\OneDrive\Documents\Unity Projects\LCAssets\Assets\Plugins\</GameFolder>
     <Copy>copy</Copy>
     <Copy Condition=" '$(OS)' != 'Windows_NT' ">cp</Copy>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="$(Copy) &quot;$(TargetPath)&quot; &quot;$(GameFolder)$(TargetFileName)&quot;" />
   </Target>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -99,15 +98,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigManager.cs" />
-    <Compile Include="Enemies\ScribeAI.cs" />
     <Compile Include="Enemies\SkunkBearCloud.cs" />
     <Compile Include="Enemies\SkunkBearCubAI.cs" />
     <Compile Include="Enemies\SkunkBearAI.cs" />
     <Compile Include="Enemies\WatcherHarpyAI.cs" />
-    <Compile Include="Patches\PlayerControllerBPatch.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Patches\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

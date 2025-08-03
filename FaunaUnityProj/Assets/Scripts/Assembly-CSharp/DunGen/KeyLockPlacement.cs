@@ -7,6 +7,6 @@ namespace DunGen
 	{
 		public int ID;
 
-		public IntRange Range;
+		public IntRange Range = new IntRange(0, 1);
 	}
 }

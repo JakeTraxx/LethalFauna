@@ -11,11 +11,11 @@ namespace DigitalRuby.ThunderAndLightning
 		public LightRenderMode RenderMode;
 
 		[Tooltip("Color of the light")]
-		public Color LightColor;
+		public Color LightColor = Color.white;
 
 		[Tooltip("What percent of segments should have a light? For performance you may want to keep this small.")]
 		[Range(0f, 1f)]
-		public float LightPercent;
+		public float LightPercent = 1E-06f;
 
 		[Tooltip("What percent of lights created should cast shadows?")]
 		[Range(0f, 1f)]
@@ -23,11 +23,11 @@ namespace DigitalRuby.ThunderAndLightning
 
 		[Tooltip("Light intensity")]
 		[Range(0f, 8f)]
-		public float LightIntensity;
+		public float LightIntensity = 0.5f;
 
 		[Tooltip("Light multiplier. Can set to a high number (millions) if HDRP (lumens) support is needed.")]
 		[Range(0f, 10000000f)]
-		public float LightMultiplier;
+		public float LightMultiplier = 1f;
 
 		[Tooltip("Bounce intensity")]
 		[Range(0f, 8f)]
@@ -35,21 +35,21 @@ namespace DigitalRuby.ThunderAndLightning
 
 		[Tooltip("Shadow strength, 0 means all light, 1 means all shadow")]
 		[Range(0f, 1f)]
-		public float ShadowStrength;
+		public float ShadowStrength = 1f;
 
 		[Tooltip("Shadow bias, 0 - 2")]
 		[Range(0f, 2f)]
-		public float ShadowBias;
+		public float ShadowBias = 0.05f;
 
 		[Tooltip("Shadow normal bias, 0 - 3")]
 		[Range(0f, 3f)]
-		public float ShadowNormalBias;
+		public float ShadowNormalBias = 0.4f;
 
 		[Tooltip("The range of each light created")]
 		public float LightRange;
 
 		[Tooltip("Only light objects that match this layer mask")]
-		public LayerMask CullingMask;
+		public LayerMask CullingMask = -1;
 
 		[Tooltip("Offset from camera position when in orthographic mode")]
 		[Range(-1000f, 1000f)]
@@ -57,16 +57,26 @@ namespace DigitalRuby.ThunderAndLightning
 
 		[Tooltip("Increase the duration of light fade in compared to the lightning fade.")]
 		[Range(0f, 20f)]
-		public float FadeInMultiplier;
+		public float FadeInMultiplier = 1f;
 
 		[Tooltip("Increase the duration of light fully lit compared to the lightning fade.")]
 		[Range(0f, 20f)]
-		public float FadeFullyLitMultiplier;
+		public float FadeFullyLitMultiplier = 1f;
 
 		[Tooltip("Increase the duration of light fade out compared to the lightning fade.")]
 		[Range(0f, 20f)]
-		public float FadeOutMultiplier;
+		public float FadeOutMultiplier = 1f;
 
-		public bool HasLight => false;
+		public bool HasLight
+		{
+			get
+			{
+				if (LightColor.a > 0f && LightIntensity >= 0.01f && LightPercent >= 1E-07f)
+				{
+					return LightRange > 0.01f;
+				}
+				return false;
+			}
+		}
 	}
 }

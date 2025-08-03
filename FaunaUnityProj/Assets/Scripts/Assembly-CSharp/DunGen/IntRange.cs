@@ -15,16 +15,22 @@ namespace DunGen
 
 		public IntRange(int min, int max)
 		{
+			Min = min;
+			Max = max;
 		}
 
 		public int GetRandom(RandomStream random)
 		{
-			return 0;
+			if (Min > Max)
+			{
+				Max = Min;
+			}
+			return random.Next(Min, Max + 1);
 		}
 
 		public override string ToString()
 		{
-			return null;
+			return Min + " - " + Max;
 		}
 	}
 }

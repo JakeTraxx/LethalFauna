@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Linq;
 using DunGen.Tags;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -13,15 +13,15 @@ namespace DunGen
 
 		[SerializeField]
 		[FormerlySerializedAs("AllowImmediateRepeats")]
-		private bool allowImmediateRepeats;
+		private bool allowImmediateRepeats = true;
 
-		public bool AllowRotation;
+		public bool AllowRotation = true;
 
 		public TileRepeatMode RepeatMode;
 
 		public bool OverrideAutomaticTileBounds;
 
-		public Bounds TileBoundsOverride;
+		public Bounds TileBoundsOverride = new Bounds(Vector3.zero, Vector3.one);
 
 		public Doorway Entrance;
 
@@ -31,13 +31,13 @@ namespace DunGen
 
 		public float ConnectionChance;
 
-		public TagContainer Tags;
+		public TagContainer Tags = new TagContainer();
 
-		public List<Doorway> AllDoorways;
+		public List<Doorway> AllDoorways = new List<Doorway>();
 
-		public List<Doorway> UsedDoorways;
+		public List<Doorway> UsedDoorways = new List<Doorway>();
 
-		public List<Doorway> UnusedDoorways;
+		public List<Doorway> UnusedDoorways = new List<Doorway>();
 
 		[SerializeField]
 		private TilePlacementData placement;
@@ -46,74 +46,140 @@ namespace DunGen
 		private int fileVersion;
 
 		[HideInInspector]
-		public Bounds Bounds => default(Bounds);
+		public Bounds Bounds => base.transform.TransformBounds(Placement.LocalBounds);
 
 		public TilePlacementData Placement
 		{
 			get
 			{
-				return null;
+				return placement;
 			}
 			internal set
 			{
+				placement = value;
 			}
 		}
 
-		public Dungeon Dungeon
-		{
-			[CompilerGenerated]
-			get
-			{
-				return null;
-			}
-			[CompilerGenerated]
-			internal set
-			{
-			}
-		}
+		public Dungeon Dungeon { get; internal set; }
 
 		internal void AddTriggerVolume()
 		{
+			BoxCollider boxCollider = base.gameObject.AddComponent<BoxCollider>();
+			boxCollider.center = Placement.LocalBounds.center;
+			boxCollider.size = Placement.LocalBounds.size;
+			boxCollider.isTrigger = true;
 		}
 
 		private void OnTriggerEnter(Collider other)
 		{
+			if (!(other == null))
+			{
+				DungenCharacter component = other.gameObject.GetComponent<DungenCharacter>();
+				if (component != null)
+				{
+					component.OnTileEntered(this);
+				}
+			}
 		}
 
 		private void OnTriggerExit(Collider other)
 		{
+			if (!(other == null))
+			{
+				DungenCharacter component = other.gameObject.GetComponent<DungenCharacter>();
+				if (component != null)
+				{
+					component.OnTileExited(this);
+				}
+			}
 		}
 
 		private void OnDrawGizmosSelected()
 		{
+			Gizmos.color = Color.red;
+			Bounds? bounds = null;
+			if (OverrideAutomaticTileBounds)
+			{
+				bounds = base.transform.TransformBounds(TileBoundsOverride);
+			}
+			else if (placement != null)
+			{
+				bounds = Bounds;
+			}
+			if (bounds.HasValue)
+			{
+				Gizmos.DrawWireCube(bounds.Value.center, bounds.Value.size);
+			}
 		}
 
 		public IEnumerable<Tile> GetAdjactedTiles()
 		{
-			return null;
+			return UsedDoorways.Select((Doorway x) => x.ConnectedDoorway.Tile).Distinct();
 		}
 
 		public bool IsAdjacentTo(Tile other)
 		{
+			foreach (Doorway usedDoorway in UsedDoorways)
+			{
+				if (usedDoorway.ConnectedDoorway.Tile == other)
+				{
+					return true;
+				}
+			}
 			return false;
 		}
 
 		public Doorway GetEntranceDoorway()
 		{
+			foreach (Doorway usedDoorway in UsedDoorways)
+			{
+				Tile tile = usedDoorway.ConnectedDoorway.Tile;
+				if (Placement.IsOnMainPath)
+				{
+					if (tile.Placement.IsOnMainPath && Placement.PathDepth > tile.Placement.PathDepth)
+					{
+						return usedDoorway;
+					}
+				}
+				else if (tile.Placement.IsOnMainPath || Placement.Depth > tile.Placement.Depth)
+				{
+					return usedDoorway;
+				}
+			}
 			return null;
 		}
 
 		public Doorway GetExitDoorway()
 		{
+			foreach (Doorway usedDoorway in UsedDoorways)
+			{
+				Tile tile = usedDoorway.ConnectedDoorway.Tile;
+				if (Placement.IsOnMainPath)
+				{
+					if (tile.Placement.IsOnMainPath && Placement.PathDepth < tile.Placement.PathDepth)
+					{
+						return usedDoorway;
+					}
+				}
+				else if (!tile.Placement.IsOnMainPath && Placement.Depth < tile.Placement.Depth)
+				{
+					return usedDoorway;
+				}
+			}
 			return null;
 		}
 
 		public void OnBeforeSerialize()
 		{
+			fileVersion = 1;
 		}
 
 		public void OnAfterDeserialize()
 		{
+			if (fileVersion < 1)
+			{
+				RepeatMode = ((!allowImmediateRepeats) ? TileRepeatMode.DisallowImmediate : TileRepeatMode.Allow);
+			}
 		}
 	}
 }

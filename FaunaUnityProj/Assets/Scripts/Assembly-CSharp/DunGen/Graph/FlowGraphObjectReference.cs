@@ -12,6 +12,6 @@ namespace DunGen.Graph
 		[SerializeField]
 		protected int index;
 
-		public DungeonFlow Flow => null;
+		public DungeonFlow Flow => flow;
 	}
 }

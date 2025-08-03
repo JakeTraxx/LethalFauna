@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using DunGen.Graph;
 using UnityEngine;
 
@@ -39,19 +38,20 @@ namespace DunGen
 		private TileSet tileSet;
 
 		[SerializeField]
-		private Vector3 position;
+		private Vector3 position = Vector3.zero;
 
 		[SerializeField]
-		private Quaternion rotation;
+		private Quaternion rotation = Quaternion.identity;
 
 		public int PathDepth
 		{
 			get
 			{
-				return 0;
+				return pathDepth;
 			}
 			internal set
 			{
+				pathDepth = value;
 			}
 		}
 
@@ -59,10 +59,11 @@ namespace DunGen
 		{
 			get
 			{
-				return 0f;
+				return normalizedPathDepth;
 			}
 			internal set
 			{
+				normalizedPathDepth = value;
 			}
 		}
 
@@ -70,10 +71,11 @@ namespace DunGen
 		{
 			get
 			{
-				return 0;
+				return branchDepth;
 			}
 			internal set
 			{
+				branchDepth = value;
 			}
 		}
 
@@ -81,10 +83,11 @@ namespace DunGen
 		{
 			get
 			{
-				return 0f;
+				return normalizedBranchDepth;
 			}
 			internal set
 			{
+				normalizedBranchDepth = value;
 			}
 		}
 
@@ -92,34 +95,26 @@ namespace DunGen
 		{
 			get
 			{
-				return false;
+				return isOnMainPath;
 			}
 			internal set
 			{
+				isOnMainPath = value;
 			}
 		}
 
-		public Bounds Bounds
-		{
-			[CompilerGenerated]
-			get
-			{
-				return default(Bounds);
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public Bounds Bounds { get; private set; }
 
 		public Bounds LocalBounds
 		{
 			get
 			{
-				return default(Bounds);
+				return localBounds;
 			}
 			internal set
 			{
+				localBounds = value;
+				RecalculateTransform();
 			}
 		}
 
@@ -127,10 +122,11 @@ namespace DunGen
 		{
 			get
 			{
-				return null;
+				return graphNode;
 			}
 			internal set
 			{
+				graphNode = value;
 			}
 		}
 
@@ -138,10 +134,11 @@ namespace DunGen
 		{
 			get
 			{
-				return null;
+				return graphLine;
 			}
 			internal set
 			{
+				graphLine = value;
 			}
 		}
 
@@ -149,10 +146,11 @@ namespace DunGen
 		{
 			get
 			{
-				return null;
+				return archetype;
 			}
 			internal set
 			{
+				archetype = value;
 			}
 		}
 
@@ -160,10 +158,11 @@ namespace DunGen
 		{
 			get
 			{
-				return null;
+				return tileSet;
 			}
 			internal set
 			{
+				tileSet = value;
 			}
 		}
 
@@ -171,10 +170,12 @@ namespace DunGen
 		{
 			get
 			{
-				return default(Vector3);
+				return position;
 			}
 			set
 			{
+				position = value;
+				RecalculateTransform();
 			}
 		}
 
@@ -182,53 +183,77 @@ namespace DunGen
 		{
 			get
 			{
-				return default(Quaternion);
+				return rotation;
 			}
 			set
 			{
+				rotation = value;
+				RecalculateTransform();
 			}
 		}
 
-		public Matrix4x4 Transform
+		public Matrix4x4 Transform { get; private set; }
+
+		public int Depth
 		{
-			[CompilerGenerated]
 			get
 			{
-				return default(Matrix4x4);
-			}
-			[CompilerGenerated]
-			private set
-			{
+				if (!isOnMainPath)
+				{
+					return branchDepth;
+				}
+				return pathDepth;
 			}
 		}
 
-		public int Depth => 0;
-
-		public float NormalizedDepth => 0f;
-
-		public InjectedTile InjectionData
+		public float NormalizedDepth
 		{
-			[CompilerGenerated]
 			get
 			{
-				return null;
-			}
-			[CompilerGenerated]
-			set
-			{
+				if (!isOnMainPath)
+				{
+					return normalizedBranchDepth;
+				}
+				return normalizedPathDepth;
 			}
 		}
+
+		public InjectedTile InjectionData { get; set; }
 
 		public TilePlacementData()
 		{
+			RecalculateTransform();
 		}
 
 		public TilePlacementData(TilePlacementData copy)
 		{
+			PathDepth = copy.PathDepth;
+			NormalizedPathDepth = copy.NormalizedPathDepth;
+			BranchDepth = copy.BranchDepth;
+			NormalizedBranchDepth = copy.NormalizedDepth;
+			IsOnMainPath = copy.IsOnMainPath;
+			LocalBounds = copy.LocalBounds;
+			Transform = copy.Transform;
+			GraphNode = copy.GraphNode;
+			GraphLine = copy.GraphLine;
+			Archetype = copy.Archetype;
+			TileSet = copy.TileSet;
+			InjectionData = copy.InjectionData;
+			position = copy.position;
+			rotation = copy.rotation;
+			RecalculateTransform();
 		}
 
 		private void RecalculateTransform()
 		{
+			Transform = Matrix4x4.TRS(position, rotation, Vector3.one);
+			Vector3 vector = Transform.MultiplyPoint(localBounds.min);
+			Vector3 vector2 = Transform.MultiplyPoint(localBounds.max) - vector;
+			Vector3 center = vector + vector2 / 2f;
+			vector2.x = Mathf.Abs(vector2.x);
+			vector2.y = Mathf.Abs(vector2.y);
+			vector2.z = Mathf.Abs(vector2.z);
+			Bounds = new Bounds(center, vector2);
 		}
 	}
 }

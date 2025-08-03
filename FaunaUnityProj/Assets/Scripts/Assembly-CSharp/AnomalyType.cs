@@ -12,7 +12,7 @@ public class AnomalyType : ScriptableObject
 	[Range(0f, 1f)]
 	public float captureDifficulty;
 
-	public AnimationCurve difficultyVariance;
+	public AnimationCurve difficultyVariance = AnimationCurve.Linear(0f, 1f, 1f, 1f);
 
 	[Header("Spawning")]
 	public AnimationCurve probabilityCurve;

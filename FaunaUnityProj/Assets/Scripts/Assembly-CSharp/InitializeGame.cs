@@ -1,72 +1,19 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class InitializeGame : MonoBehaviour
 {
-	[CompilerGenerated]
-	private sealed class _003CSendToNextScene_003Ed__10 : IEnumerator<object>, IEnumerator, IDisposable
-	{
-		private int _003C_003E1__state;
-
-		private object _003C_003E2__current;
-
-		public InitializeGame _003C_003E4__this;
-
-		object IEnumerator<object>.Current
-		{
-			[DebuggerHidden]
-			get
-			{
-				return null;
-			}
-		}
-
-		object IEnumerator.Current
-		{
-			[DebuggerHidden]
-			get
-			{
-				return null;
-			}
-		}
-
-		[DebuggerHidden]
-		public _003CSendToNextScene_003Ed__10(int _003C_003E1__state)
-		{
-		}
-
-		[DebuggerHidden]
-		void IDisposable.Dispose()
-		{
-		}
-
-		private bool MoveNext()
-		{
-			return false;
-		}
-
-		bool IEnumerator.MoveNext()
-		{
-			//ILSpy generated this explicit interface implementation from .override directive in MoveNext
-			return this.MoveNext();
-		}
-
-		[DebuggerHidden]
-		void IEnumerator.Reset()
-		{
-		}
-	}
-
-	public bool runBootUpScreen;
+	public bool runBootUpScreen = true;
 
 	public Animator bootUpAnimation;
 
 	public AudioSource bootUpAudio;
+
+	public AudioClip bootUpSFXError;
+
+	public AudioClip coldOpen2Audio;
 
 	public PlayerActions playerActions;
 
@@ -74,29 +21,98 @@ public class InitializeGame : MonoBehaviour
 
 	private bool hasSkipped;
 
+	public bool playColdOpenCinematic;
+
+	public bool playColdOpenCinematic2;
+
 	private void OnEnable()
 	{
+		playerActions.Movement.OpenMenu.performed += OpenMenu_performed;
+		playerActions.Movement.Enable();
 	}
 
 	private void OnDisable()
 	{
+		playerActions.Movement.OpenMenu.performed -= OpenMenu_performed;
+		playerActions.Movement.Disable();
 	}
 
 	private void Awake()
 	{
+		playerActions = new PlayerActions();
+		Application.backgroundLoadingPriority = ThreadPriority.Normal;
+		int num = ES3.Load("LastVerPlayed", "LCGeneralSaveData", GameNetworkManager.Instance.gameVersionNum);
+		bool flag = num < 50;
+		float num2 = ES3.Load("TimesLoadedGame", "LCGeneralSaveData", 0);
+		playColdOpenCinematic = flag || num2 == 7f;
+		if (playColdOpenCinematic)
+		{
+			playColdOpenCinematic2 = false;
+		}
+		else if ((num2 > 25f || num < 60) && !ES3.Load("PlayedCinematic2", "LCGeneralSaveData", defaultValue: false))
+		{
+			ES3.Save("PlayedCinematic2", value: true, "LCGeneralSaveData");
+			playColdOpenCinematic2 = true;
+		}
+		if (flag)
+		{
+			ES3.Save("TimesLoadedGame", 8, "LCGeneralSaveData");
+		}
 	}
 
 	public void OpenMenu_performed(InputAction.CallbackContext context)
 	{
+		canSkip = !playColdOpenCinematic && !playColdOpenCinematic2;
+		if (context.performed && canSkip && !hasSkipped)
+		{
+			hasSkipped = true;
+			SceneManager.LoadScene("MainMenu");
+		}
 	}
 
-	[IteratorStateMachine(typeof(_003CSendToNextScene_003Ed__10))]
 	private IEnumerator SendToNextScene()
 	{
-		return null;
+		if (runBootUpScreen)
+		{
+			if (playColdOpenCinematic2)
+			{
+				bootUpAudio.PlayOneShot(bootUpSFXError);
+			}
+			else
+			{
+				bootUpAudio.Play();
+			}
+			yield return new WaitForSeconds(0.2f);
+			canSkip = true;
+			if (playColdOpenCinematic2)
+			{
+				bootUpAnimation.SetTrigger("playAnim2");
+			}
+			else
+			{
+				bootUpAnimation.SetTrigger("playAnim");
+			}
+			if (playColdOpenCinematic)
+			{
+				yield return new WaitForSeconds(1.5f);
+				SceneManager.LoadScene("ColdOpen1");
+				yield break;
+			}
+			if (playColdOpenCinematic2)
+			{
+				coldOpen2Audio.LoadAudioData();
+				yield return new WaitForSeconds(5.6f);
+				SceneManager.LoadScene("ColdOpen2");
+				yield break;
+			}
+			yield return new WaitForSeconds(3f);
+		}
+		yield return new WaitForSeconds(0.2f);
+		SceneManager.LoadScene("MainMenu");
 	}
 
 	private void Start()
 	{
+		StartCoroutine(SendToNextScene());
 	}
 }

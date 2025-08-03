@@ -7,5 +7,5 @@ public class RandomAudioClip
 	public AudioClip audioClip;
 
 	[Range(0f, 100f)]
-	public int chance;
+	public int chance = 100;
 }

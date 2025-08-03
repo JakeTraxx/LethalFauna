@@ -5,11 +5,11 @@ internal class AudioSourceComparer : IEqualityComparer<AudioSource>
 {
 	public bool Equals(AudioSource x, AudioSource y)
 	{
-		return false;
+		return x.GetInstanceID() == y.GetInstanceID();
 	}
 
 	public int GetHashCode(AudioSource obj)
 	{
-		return 0;
+		return obj.GetInstanceID().GetHashCode();
 	}
 }

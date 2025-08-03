@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace DunGen
@@ -34,44 +33,59 @@ namespace DunGen
 		{
 			get
 			{
-				return false;
+				return dontCullBehind;
 			}
 			set
 			{
+				if (dontCullBehind != value)
+				{
+					dontCullBehind = value;
+					SetDoorState(isOpen);
+				}
 			}
 		}
 
-		public bool ShouldCullBehind => false;
+		public bool ShouldCullBehind
+		{
+			get
+			{
+				if (DontCullBehind)
+				{
+					return false;
+				}
+				return !isOpen;
+			}
+		}
 
 		public virtual bool IsOpen
 		{
 			get
 			{
-				return false;
+				return isOpen;
 			}
 			set
 			{
+				if (isOpen != value)
+				{
+					SetDoorState(value);
+				}
 			}
 		}
 
-		public event DoorStateChangedDelegate OnDoorStateChanged
-		{
-			[CompilerGenerated]
-			add
-			{
-			}
-			[CompilerGenerated]
-			remove
-			{
-			}
-		}
+		public event DoorStateChangedDelegate OnDoorStateChanged;
 
 		private void OnDestroy()
 		{
+			this.OnDoorStateChanged = null;
 		}
 
 		public void SetDoorState(bool isOpen)
 		{
+			this.isOpen = isOpen;
+			if (this.OnDoorStateChanged != null)
+			{
+				this.OnDoorStateChanged(this, isOpen);
+			}
 		}
 	}
 }

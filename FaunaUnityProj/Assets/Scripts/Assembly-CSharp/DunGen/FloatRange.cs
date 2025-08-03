@@ -15,11 +15,20 @@ namespace DunGen
 
 		public FloatRange(float min, float max)
 		{
+			Min = min;
+			Max = max;
 		}
 
 		public float GetRandom(RandomStream random)
 		{
-			return 0f;
+			if (Min > Max)
+			{
+				float min = Min;
+				Min = Max;
+				Max = min;
+			}
+			float num = Max - Min;
+			return Min + (float)random.NextDouble() * num;
 		}
 	}
 }

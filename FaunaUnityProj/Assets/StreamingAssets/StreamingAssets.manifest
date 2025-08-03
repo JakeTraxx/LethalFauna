@@ -1,20 +1,10 @@
 ManifestFileVersion: 0
-CRC: 2159445983
+CRC: 3262792292
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: modassets
-      Dependencies:
-        Dependency_0: batteries
-    Info_1:
       Name: batteries
       Dependencies: {}
-    Info_2:
-      Name: pickupcompany
-      Dependencies: {}
-    Info_3:
-      Name: curseofembrion
-      Dependencies: {}
-    Info_4:
+    Info_1:
       Name: lethalfauna
       Dependencies: {}

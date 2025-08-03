@@ -9,23 +9,25 @@ public class Item : ScriptableObject
 	public string itemName;
 
 	[Space(3f)]
-	public List<ItemGroup> spawnPositionTypes;
+	public List<ItemGroup> spawnPositionTypes = new List<ItemGroup>();
 
 	[Space(3f)]
 	public bool twoHanded;
 
 	public bool twoHandedAnimation;
 
+	public bool disableHandsOnWall;
+
 	public bool canBeGrabbedBeforeGameStart;
 
 	[Space(3f)]
-	public float weight;
+	public float weight = 1f;
 
 	public bool itemIsTrigger;
 
 	public bool holdButtonUse;
 
-	public bool itemSpawnsOnGround;
+	public bool itemSpawnsOnGround = true;
 
 	[Space(5f)]
 	public bool isConductiveMetal;
@@ -37,7 +39,7 @@ public class Item : ScriptableObject
 
 	public bool lockedInDemo;
 
-	public int highestSalePercentage;
+	public int highestSalePercentage = 80;
 
 	[Space(3f)]
 	public int maxValue;
@@ -48,11 +50,11 @@ public class Item : ScriptableObject
 
 	[Space(3f)]
 	[Header("Battery")]
-	public bool requiresBattery;
+	public bool requiresBattery = true;
 
-	public float batteryUsage;
+	public float batteryUsage = 15f;
 
-	public bool automaticallySetUsingPower;
+	public bool automaticallySetUsingPower = true;
 
 	[Space(5f)]
 	public Sprite itemIcon;
@@ -80,13 +82,13 @@ public class Item : ScriptableObject
 	public AudioClip throwSFX;
 
 	[Header("Netcode")]
-	public bool syncGrabFunction;
+	public bool syncGrabFunction = true;
 
-	public bool syncUseFunction;
+	public bool syncUseFunction = true;
 
-	public bool syncDiscardFunction;
+	public bool syncDiscardFunction = true;
 
-	public bool syncInteractLRFunction;
+	public bool syncInteractLRFunction = true;
 
 	[Header("Save data")]
 	public bool saveItemVariable;
@@ -101,15 +103,15 @@ public class Item : ScriptableObject
 
 	public int floorYOffset;
 
-	public bool allowDroppingAheadOfPlayer;
+	public bool allowDroppingAheadOfPlayer = true;
 
-	public Vector3 restingRotation;
+	public Vector3 restingRotation = new Vector3(0f, 0f, 90f);
 
-	public Vector3 rotationOffset;
+	public Vector3 rotationOffset = Vector3.zero;
 
-	public Vector3 positionOffset;
+	public Vector3 positionOffset = Vector3.zero;
 
-	public bool meshOffset;
+	public bool meshOffset = true;
 
 	public Mesh[] meshVariants;
 
@@ -117,5 +119,5 @@ public class Item : ScriptableObject
 
 	public bool usableInSpecialAnimations;
 
-	public bool canBeInspected;
+	public bool canBeInspected = true;
 }

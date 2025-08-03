@@ -15,6 +15,7 @@ namespace DunGen.Adapters
 
 		protected override void Run(DungeonGenerator generator)
 		{
+			Generate(generator.CurrentDungeon);
 		}
 
 		public abstract void Generate(Dungeon dungeon);

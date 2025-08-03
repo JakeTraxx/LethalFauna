@@ -1,33 +1,15 @@
-using System.Runtime.CompilerServices;
-
 namespace DunGen
 {
 	public struct ProxyDoorwayConnection
 	{
-		public DoorwayProxy A
-		{
-			[CompilerGenerated]
-			readonly get
-			{
-				return null;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public DoorwayProxy A { get; private set; }
 
-		public DoorwayProxy B
+		public DoorwayProxy B { get; private set; }
+
+		public ProxyDoorwayConnection(DoorwayProxy a, DoorwayProxy b)
 		{
-			[CompilerGenerated]
-			readonly get
-			{
-				return null;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
+			A = a;
+			B = b;
 		}
 	}
 }

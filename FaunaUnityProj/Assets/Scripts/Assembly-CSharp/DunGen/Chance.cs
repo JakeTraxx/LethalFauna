@@ -10,15 +10,19 @@ namespace DunGen
 		public float Weight;
 
 		public Chance()
+			: this(default(T), 1f)
 		{
 		}
 
 		public Chance(T value)
+			: this(value, 1f)
 		{
 		}
 
 		public Chance(T value, float weight)
 		{
+			Value = value;
+			Weight = weight;
 		}
 	}
 }

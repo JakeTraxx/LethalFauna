@@ -11,20 +11,23 @@ public class ReverbPreset : ScriptableObject
 	public bool changeHighFreq;
 
 	[Range(-10000f, 0f)]
-	public float highFreq;
+	public float highFreq = -270f;
 
 	public bool changeLowFreq;
 
 	[Range(-10000f, 0f)]
-	public float lowFreq;
+	public float lowFreq = -244f;
 
 	public bool changeDecayTime;
 
 	[Range(0f, 35f)]
-	public float decayTime;
+	public float decayTime = 1.4f;
 
 	public bool changeRoom;
 
 	[Range(-10000f, 0f)]
-	public float room;
+	public float room = -600f;
+
+	[Space(3f)]
+	public bool hasEcho;
 }

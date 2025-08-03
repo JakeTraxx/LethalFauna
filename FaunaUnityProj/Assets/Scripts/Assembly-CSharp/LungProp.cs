@@ -1,73 +1,11 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class LungProp : GrabbableObject
 {
-	[CompilerGenerated]
-	private sealed class _003CDisconnectFromMachinery_003Ed__13 : IEnumerator<object>, IEnumerator, IDisposable
-	{
-		private int _003C_003E1__state;
+	public bool isLungPowered = true;
 
-		private object _003C_003E2__current;
-
-		public LungProp _003C_003E4__this;
-
-		private GameObject _003CnewSparkParticle_003E5__2;
-
-		private AudioSource _003CthisAudio_003E5__3;
-
-		object IEnumerator<object>.Current
-		{
-			[DebuggerHidden]
-			get
-			{
-				return null;
-			}
-		}
-
-		object IEnumerator.Current
-		{
-			[DebuggerHidden]
-			get
-			{
-				return null;
-			}
-		}
-
-		[DebuggerHidden]
-		public _003CDisconnectFromMachinery_003Ed__13(int _003C_003E1__state)
-		{
-		}
-
-		[DebuggerHidden]
-		void IDisposable.Dispose()
-		{
-		}
-
-		private bool MoveNext()
-		{
-			return false;
-		}
-
-		bool IEnumerator.MoveNext()
-		{
-			//ILSpy generated this explicit interface implementation from .override directive in MoveNext
-			return this.MoveNext();
-		}
-
-		[DebuggerHidden]
-		void IEnumerator.Reset()
-		{
-		}
-	}
-
-	public bool isLungPowered;
-
-	public bool isLungDocked;
+	public bool isLungDocked = true;
 
 	public bool isLungDockedInElevator;
 
@@ -89,17 +27,66 @@ public class LungProp : GrabbableObject
 
 	private Color emissiveColor;
 
+	public EnemyType radMechEnemyType;
+
 	public override void EquipItem()
 	{
+		Debug.Log($"Lung apparatice was grabbed. Is owner: {base.IsOwner}");
+		if (isLungDocked)
+		{
+			isLungDocked = false;
+			if (disconnectAnimation != null)
+			{
+				StopCoroutine(disconnectAnimation);
+			}
+			disconnectAnimation = StartCoroutine(DisconnectFromMachinery());
+		}
+		if (isLungDockedInElevator)
+		{
+			isLungDockedInElevator = false;
+			base.gameObject.GetComponent<AudioSource>().PlayOneShot(disconnectSFX);
+			_ = isLungPowered;
+		}
+		base.EquipItem();
 	}
 
-	[IteratorStateMachine(typeof(_003CDisconnectFromMachinery_003Ed__13))]
 	private IEnumerator DisconnectFromMachinery()
 	{
-		return null;
+		GameObject newSparkParticle = Object.Instantiate(sparkParticle, base.transform.position, Quaternion.identity, null);
+		AudioSource thisAudio = base.gameObject.GetComponent<AudioSource>();
+		thisAudio.Stop();
+		thisAudio.PlayOneShot(disconnectSFX, 0.7f);
+		yield return new WaitForSeconds(0.1f);
+		newSparkParticle.SetActive(value: true);
+		thisAudio.PlayOneShot(removeFromMachineSFX);
+		if (base.IsServer && Random.Range(0, 100) < 70 && RoundManager.Instance.minEnemiesToSpawn < 2)
+		{
+			RoundManager.Instance.minEnemiesToSpawn = 2;
+		}
+		yield return new WaitForSeconds(1f);
+		roundManager.FlickerLights();
+		yield return new WaitForSeconds(2.5f);
+		roundManager.SwitchPower(on: false);
+		roundManager.powerOffPermanently = true;
+		yield return new WaitForSeconds(0.75f);
+		HUDManager.Instance.RadiationWarningHUD();
+		if (!base.IsServer || radMechEnemyType == null)
+		{
+			yield break;
+		}
+		EnemyAINestSpawnObject[] array = Object.FindObjectsByType<EnemyAINestSpawnObject>(FindObjectsSortMode.None);
+		for (int i = 0; i < array.Length; i++)
+		{
+			if (array[i].enemyType == radMechEnemyType)
+			{
+				RoundManager.Instance.SpawnEnemyGameObject(RoundManager.Instance.outsideAINodes[0].transform.position, 0f, -1, radMechEnemyType);
+			}
+		}
 	}
 
 	public override void Start()
 	{
+		base.Start();
+		roundManager = Object.FindObjectOfType<RoundManager>();
 	}
 }

@@ -10,5 +10,8 @@ public class HoarderBugItem
 
 	public HoarderBugItem(GrabbableObject newObject, HoarderBugItemStatus newStatus, Vector3 bugNestPosition)
 	{
+		itemGrabbableObject = newObject;
+		status = newStatus;
+		itemNestPosition = bugNestPosition;
 	}
 }

@@ -10,7 +10,7 @@ namespace DunGen
 
 		public Color Colour;
 
-		public IntRange KeysPerLock;
+		public IntRange KeysPerLock = new IntRange(1, 1);
 
 		[SerializeField]
 		private int id;
@@ -22,10 +22,11 @@ namespace DunGen
 		{
 			get
 			{
-				return 0;
+				return id;
 			}
 			set
 			{
+				id = value;
 			}
 		}
 
@@ -33,15 +34,17 @@ namespace DunGen
 		{
 			get
 			{
-				return null;
+				return name;
 			}
 			internal set
 			{
+				name = value;
 			}
 		}
 
 		internal Key(int id)
 		{
+			this.id = id;
 		}
 	}
 }

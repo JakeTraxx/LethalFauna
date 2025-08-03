@@ -1,69 +1,35 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Linq;
+using UnityEngine;
 
 namespace DunGen.Analysis
 {
 	public sealed class NumberSetData
 	{
-		public float Min
-		{
-			[CompilerGenerated]
-			get
-			{
-				return 0f;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public float Min { get; private set; }
 
-		public float Max
-		{
-			[CompilerGenerated]
-			get
-			{
-				return 0f;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public float Max { get; private set; }
 
-		public float Average
-		{
-			[CompilerGenerated]
-			get
-			{
-				return 0f;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public float Average { get; private set; }
 
-		public float StandardDeviation
-		{
-			[CompilerGenerated]
-			get
-			{
-				return 0f;
-			}
-			[CompilerGenerated]
-			private set
-			{
-			}
-		}
+		public float StandardDeviation { get; private set; }
 
 		public NumberSetData(IEnumerable<float> values)
 		{
+			Min = values.Min();
+			Max = values.Max();
+			Average = values.Sum() / (float)values.Count();
+			float[] array = new float[values.Count()];
+			for (int i = 0; i < array.Length; i++)
+			{
+				array[i] = Mathf.Pow(values.ElementAt(i) - Average, 2f);
+			}
+			StandardDeviation = Mathf.Sqrt(array.Sum() / (float)array.Length);
 		}
 
 		public override string ToString()
 		{
-			return null;
+			return $"[ Min: {Min}, Max: {Max}, Average: {Average}, Standard Deviation: {StandardDeviation} ]";
 		}
 	}
 }

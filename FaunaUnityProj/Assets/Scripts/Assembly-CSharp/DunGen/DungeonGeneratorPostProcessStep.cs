@@ -9,5 +9,12 @@ namespace DunGen
 		public PostProcessPhase Phase;
 
 		public int Priority;
+
+		public DungeonGeneratorPostProcessStep(Action<DungeonGenerator> postProcessCallback, int priority, PostProcessPhase phase)
+		{
+			PostProcessCallback = postProcessCallback;
+			Priority = priority;
+			Phase = phase;
+		}
 	}
 }

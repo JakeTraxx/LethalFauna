@@ -14,12 +14,12 @@ namespace DigitalRuby.ThunderAndLightning
 
 		public int Random()
 		{
-			return 0;
+			return UnityEngine.Random.Range(Minimum, Maximum + 1);
 		}
 
 		public int Random(System.Random r)
 		{
-			return 0;
+			return r.Next(Minimum, Maximum + 1);
 		}
 	}
 }

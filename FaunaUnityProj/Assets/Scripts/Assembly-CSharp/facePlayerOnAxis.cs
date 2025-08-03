@@ -10,5 +10,9 @@ public class facePlayerOnAxis : MonoBehaviour
 
 	private void Update()
 	{
+		if (StartOfRound.Instance.audioListener != null)
+		{
+			base.transform.LookAt(StartOfRound.Instance.audioListener.transform.position, turnAxis.up);
+		}
 	}
 }
