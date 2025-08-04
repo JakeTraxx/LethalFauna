@@ -1,15 +1,10 @@
 public class HostSettings
 {
-	public string lobbyName = "Unnamed";
-
-	public string serverTag = "";
+	public string lobbyName;
 
 	public bool isLobbyPublic;
 
-	public HostSettings(string name, bool isPublic, string setTag = "")
+	public HostSettings(string name, bool isPublic)
 	{
-		lobbyName = name;
-		isLobbyPublic = isPublic;
-		serverTag = setTag;
 	}
 }

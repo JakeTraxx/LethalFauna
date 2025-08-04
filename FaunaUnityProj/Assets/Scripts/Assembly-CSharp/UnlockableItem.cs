@@ -26,31 +26,19 @@ public class UnlockableItem
 	public Vector3 placedRotation;
 
 	[Space(3f)]
-	public float luckValue;
-
 	public bool inStorage;
 
-	public bool canBeStored = true;
+	public bool canBeStored;
 
-	public int maxNumber = 1;
+	public int maxNumber;
 
 	[Space(3f)]
 	public bool hasBeenUnlockedByPlayer;
 
-	[Space(3f)]
+	[Space(5f)]
 	public Material suitMaterial;
 
-	public GameObject headCostumeObject;
-
-	public GameObject lowerTorsoCostumeObject;
-
-	[Space(3f)]
 	public bool alreadyUnlocked;
 
-	public bool unlockedInChallengeFile;
-
-	public bool spawnPrefab = true;
-
-	[Header("Misc.")]
-	public AudioClip jumpAudio;
+	public bool spawnPrefab;
 }

@@ -8,7 +8,7 @@ public class RemappableKey
 
 	public InputActionReference currentInput;
 
-	public int rebindingIndex = -1;
+	public int rebindingIndex;
 
 	public bool gamepadOnly;
 }

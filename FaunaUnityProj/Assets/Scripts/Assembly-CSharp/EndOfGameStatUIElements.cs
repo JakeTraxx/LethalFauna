@@ -29,8 +29,4 @@ public class EndOfGameStatUIElements
 	public TextMeshProUGUI penaltyAddition;
 
 	public TextMeshProUGUI penaltyTotal;
-
-	public TextMeshProUGUI challengeCollectedText;
-
-	public TextMeshProUGUI challengeRankText;
 }

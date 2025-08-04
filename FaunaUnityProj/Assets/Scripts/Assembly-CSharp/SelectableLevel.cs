@@ -14,7 +14,7 @@ public class SelectableLevel : ScriptableObject
 	public bool lockedForDemo;
 
 	[Space(3f)]
-	public bool spawnEnemiesAndScrap = true;
+	public bool spawnEnemiesAndScrap;
 
 	public string PlanetName;
 
@@ -25,14 +25,14 @@ public class SelectableLevel : ScriptableObject
 
 	public string riskLevel;
 
-	public float timeToArrive = 8f;
+	public float timeToArrive;
 
 	[Header("Time")]
 	public float OffsetFromGlobalTime;
 
-	public float DaySpeedMultiplier = 1f;
+	public float DaySpeedMultiplier;
 
-	public bool planetHasTime = true;
+	public bool planetHasTime;
 
 	[Space(5f)]
 	public RandomWeatherWithVariables[] randomWeathers;
@@ -55,14 +55,8 @@ public class SelectableLevel : ScriptableObject
 
 	public SpawnableOutsideObjectWithRarity[] spawnableOutsideObjects;
 
-	public bool canSpawnMold = true;
-
-	public int moldSpreadIterations;
-
-	public int moldStartPosition;
-
 	[Space(3f)]
-	public List<SpawnableItemWithRarity> spawnableScrap = new List<SpawnableItemWithRarity>();
+	public List<SpawnableItemWithRarity> spawnableScrap;
 
 	public int minScrap;
 
@@ -76,19 +70,19 @@ public class SelectableLevel : ScriptableObject
 	public LevelAmbienceLibrary levelAmbienceClips;
 
 	[Header("Level enemy values")]
-	public int maxEnemyPowerCount = 8;
+	public int maxEnemyPowerCount;
 
-	public int maxOutsideEnemyPowerCount = 15;
+	public int maxOutsideEnemyPowerCount;
 
-	public int maxDaytimeEnemyPowerCount = 20;
+	public int maxDaytimeEnemyPowerCount;
 
 	[Space(3f)]
-	public List<SpawnableEnemyWithRarity> Enemies = new List<SpawnableEnemyWithRarity>();
+	public List<SpawnableEnemyWithRarity> Enemies;
 
-	public List<SpawnableEnemyWithRarity> OutsideEnemies = new List<SpawnableEnemyWithRarity>();
+	public List<SpawnableEnemyWithRarity> OutsideEnemies;
 
 	[Space(4f)]
-	public List<SpawnableEnemyWithRarity> DaytimeEnemies = new List<SpawnableEnemyWithRarity>();
+	public List<SpawnableEnemyWithRarity> DaytimeEnemies;
 
 	[Space(3f)]
 	public AnimationCurve enemySpawnChanceThroughoutDay;
@@ -97,9 +91,9 @@ public class SelectableLevel : ScriptableObject
 
 	public AnimationCurve daytimeEnemySpawnChanceThroughDay;
 
-	public float spawnProbabilityRange = 3f;
+	public float spawnProbabilityRange;
 
-	public float daytimeEnemiesProbabilityRange = 10f;
+	public float daytimeEnemiesProbabilityRange;
 
 	public bool levelIncludesSnowFootprints;
 

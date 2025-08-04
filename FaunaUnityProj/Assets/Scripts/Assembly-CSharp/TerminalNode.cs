@@ -12,22 +12,22 @@ public class TerminalNode : ScriptableObject
 	[Space(5f)]
 	public bool clearPreviousText;
 
-	public int maxCharactersToType = 25;
+	public int maxCharactersToType;
 
 	[Space(5f)]
 	[Header("Purchasing items")]
-	public int buyItemIndex = -1;
-
-	public int buyVehicleIndex = -1;
+	public int buyItemIndex;
 
 	public bool isConfirmationNode;
 
-	public int buyRerouteToMoon = -1;
+	public int buyRerouteToMoon;
 
-	public int displayPlanetInfo = -1;
+	public int displayPlanetInfo;
+
+	public bool lockedInDemo;
 
 	[Space(3f)]
-	public int shipUnlockableID = -1;
+	public int shipUnlockableID;
 
 	public bool buyUnlockable;
 
@@ -37,11 +37,11 @@ public class TerminalNode : ScriptableObject
 	public int itemCost;
 
 	[Header("Bestiary / Logs")]
-	public int creatureFileID = -1;
+	public int creatureFileID;
 
 	public string creatureName;
 
-	public int storyLogFileID = -1;
+	public int storyLogFileID;
 
 	[Space(5f)]
 	public bool overrideOptions;
@@ -53,7 +53,7 @@ public class TerminalNode : ScriptableObject
 	[Header("Misc")]
 	public AudioClip playClip;
 
-	public int playSyncedClip = -1;
+	public int playSyncedClip;
 
 	public Texture displayTexture;
 

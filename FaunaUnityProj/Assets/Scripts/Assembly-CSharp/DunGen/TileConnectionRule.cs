@@ -17,8 +17,6 @@ namespace DunGen
 
 		public TileConnectionRule(CanTilesConnectDelegate connectionDelegate, int priority = 0)
 		{
-			Delegate = connectionDelegate;
-			Priority = priority;
 		}
 	}
 }

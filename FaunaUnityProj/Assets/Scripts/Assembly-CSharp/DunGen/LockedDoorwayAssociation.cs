@@ -7,6 +7,6 @@ namespace DunGen
 	{
 		public DoorwaySocket Socket;
 
-		public GameObjectChanceTable LockPrefabs = new GameObjectChanceTable();
+		public GameObjectChanceTable LockPrefabs;
 	}
 }

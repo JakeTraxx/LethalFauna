@@ -8,7 +8,7 @@ namespace DunGen
 	{
 		public GameObject GameObject;
 
-		public float Weight = 1f;
+		public float Weight;
 
 		public GameObjectWeight()
 		{
@@ -16,8 +16,6 @@ namespace DunGen
 
 		public GameObjectWeight(GameObject gameObject, float weight = 1f)
 		{
-			GameObject = gameObject;
-			Weight = weight;
 		}
 	}
 }

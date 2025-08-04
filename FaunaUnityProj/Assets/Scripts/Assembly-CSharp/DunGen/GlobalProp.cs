@@ -7,10 +7,10 @@ namespace DunGen
 	{
 		public int PropGroupID;
 
-		public float MainPathWeight = 1f;
+		public float MainPathWeight;
 
-		public float BranchPathWeight = 1f;
+		public float BranchPathWeight;
 
-		public AnimationCurve DepthWeightScale = AnimationCurve.Linear(0f, 1f, 1f, 1f);
+		public AnimationCurve DepthWeightScale;
 	}
 }

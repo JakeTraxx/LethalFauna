@@ -8,6 +8,4 @@ public class IntWithRarity
 
 	[Range(0f, 300f)]
 	public int rarity;
-
-	public LevelAmbienceLibrary overrideLevelAmbience;
 }

@@ -23,20 +23,16 @@ namespace DigitalRuby.ThunderAndLightning
 
 		public Color32 Color;
 
-		public readonly List<LightningBoltSegment> Segments = new List<LightningBoltSegment>();
+		public readonly List<LightningBoltSegment> Segments;
 
-		public readonly List<Light> Lights = new List<Light>();
+		public readonly List<Light> Lights;
 
 		public LightningLightParameters LightParameters;
 
-		public int SegmentCount => Segments.Count - StartIndex;
+		public int SegmentCount => 0;
 
 		public void Reset()
 		{
-			LightParameters = null;
-			Segments.Clear();
-			Lights.Clear();
-			StartIndex = 0;
 		}
 	}
 }

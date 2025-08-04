@@ -8,21 +8,16 @@ namespace DunGen
 	[CreateAssetMenu(menuName = "DunGen/Tile Set", order = 700)]
 	public sealed class TileSet : ScriptableObject
 	{
-		public GameObjectChanceTable TileWeights = new GameObjectChanceTable();
+		public GameObjectChanceTable TileWeights;
 
-		public List<LockedDoorwayAssociation> LockPrefabs = new List<LockedDoorwayAssociation>();
+		public List<LockedDoorwayAssociation> LockPrefabs;
 
 		public void AddTile(GameObject tilePrefab, float mainPathWeight, float branchPathWeight)
 		{
-			TileWeights.Weights.Add(new GameObjectChance(tilePrefab, mainPathWeight, branchPathWeight, this));
 		}
 
 		public void AddTiles(IEnumerable<GameObject> tilePrefab, float mainPathWeight, float branchPathWeight)
 		{
-			foreach (GameObject item in tilePrefab)
-			{
-				AddTile(item, mainPathWeight, branchPathWeight);
-			}
 		}
 	}
 }

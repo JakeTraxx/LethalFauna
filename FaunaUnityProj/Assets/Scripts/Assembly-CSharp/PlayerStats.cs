@@ -16,5 +16,5 @@ public class PlayerStats
 
 	public bool isActivePlayer;
 
-	public List<string> playerNotes = new List<string>();
+	public List<string> playerNotes;
 }

@@ -19,11 +19,6 @@ namespace DigitalRuby.ThunderAndLightning
 
 		public override void CreateLightningBolt(LightningBoltParameters parameters)
 		{
-			parameters.Start = ((Source == null) ? parameters.Start : Source.transform.position);
-			parameters.End = ((Destination == null) ? parameters.End : Destination.transform.position);
-			parameters.StartVariance = StartVariance;
-			parameters.EndVariance = EndVariance;
-			base.CreateLightningBolt(parameters);
 		}
 	}
 }

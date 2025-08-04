@@ -5,11 +5,9 @@ public class Battery
 {
 	public bool empty;
 
-	public float charge = 1f;
+	public float charge;
 
 	public Battery(bool isEmpty, float chargeNumber)
 	{
-		empty = isEmpty;
-		charge = chargeNumber;
 	}
 }

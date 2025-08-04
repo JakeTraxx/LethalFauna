@@ -6,6 +6,5 @@ internal struct SerializedList : INetworkSerializable
 
 	void INetworkSerializable.NetworkSerialize<T>(BufferSerializer<T> serializer)
 	{
-		serializer.SerializeValue(ref Value, default(FastBufferWriter.ForPrimitives));
 	}
 }

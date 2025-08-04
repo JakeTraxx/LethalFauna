@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class RandomMapObject : MonoBehaviour
 {
-	public List<GameObject> spawnablePrefabs = new List<GameObject>();
+	public List<GameObject> spawnablePrefabs;
 
-	public bool randomizePosition = true;
+	public bool randomizePosition;
 
-	public float spawnRange = 10f;
+	public float spawnRange;
 }

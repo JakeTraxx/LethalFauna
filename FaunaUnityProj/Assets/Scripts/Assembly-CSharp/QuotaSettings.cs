@@ -5,22 +5,22 @@ using UnityEngine;
 public class QuotaSettings
 {
 	[Tooltip("The starting profit quota")]
-	public int startingQuota = 300;
+	public int startingQuota;
 
-	public int startingCredits = 60;
+	public int startingCredits;
 
-	public int deadlineDaysAmount = 4;
+	public int deadlineDaysAmount;
 
 	[Space(5f)]
 	[Tooltip("Higher value means a less steep exponential increase")]
-	public float increaseSteepness = 4f;
+	public float increaseSteepness;
 
 	[Tooltip("The minimum amount to increase")]
-	public float baseIncrease = 200f;
+	public float baseIncrease;
 
 	[Tooltip("A random Y coordinate on this line is picked and multiplied with the increase amount")]
 	public AnimationCurve randomizerCurve;
 
 	[Tooltip("This determines the severity of the randomizer curve")]
-	public float randomizerMultiplier = 1f;
+	public float randomizerMultiplier;
 }

@@ -2789,7 +2789,6 @@ MonoBehaviour:
     boolValue: 0
   currentBehaviourStateIndex: 0
   previousBehaviourStateIndex: 0
-  currentOwnershipOnThisClient: -1
   isInsidePlayerShip: 0
   AIIntervalTime: 0.2
   inSpecialAnimation: 0
@@ -2819,7 +2818,6 @@ MonoBehaviour:
   isEnemyDead: 0
   daytimeEnemyLeaving: 0
   enemyHP: 12
-  nodesTempArray: []
   openDoorSpeedMultiplier: 0
   useSecondaryAudiosOnAnimatedObjects: 0
   currentSearch:
@@ -2834,21 +2832,16 @@ MonoBehaviour:
     nodesEliminatedInCurrentSearch: 0
     inProgress: 0
     calculatingNodeInSearch: 0
-    startedSearchAtSelf: 0
     searchWidth: 0
     searchPrecision: 0
     randomized: 0
-    onlySearchNodesInLOS: 0
   DebugEnemy: 0
   stunnedIndefinitely: 0
   stunNormalizedTimer: 0
   postStunInvincibilityTimer: 0
   stunnedByPlayer: {fileID: 0}
   debugEnemyAI: 0
-  removedPowerLevel: 0
   isOutside: 0
-  hitsPhysicsObjects: 0
-  gotFarthestNodeAsync: 0
   skunkBearSpray: {fileID: 1342246706304622, guid: 84334275bcea62947932ec0fa30b861f,
     type: 3}
   bearCubPrefab: {fileID: 7261056683159870519, guid: a63a40ffe6a63e04a9a874f59a433f56,

@@ -31,10 +31,8 @@ public class PlaceableShipObject : MonoBehaviour
 	[Space(5f)]
 	public bool AllowPlacementOnWalls;
 
-	public bool AllowPlacementOnCounters = true;
+	public bool AllowPlacementOnCounters;
 
 	[Space(3f)]
 	public bool inUse;
-
-	public float lastTimeScrapWasPlaced;
 }
