@@ -1,6 +1,12 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using HarmonyLib;
+using LethalFauna.Util;
 using LethalLib.Modules;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace LethalFauna
@@ -23,41 +29,31 @@ namespace LethalFauna
             if (instance == null)
                 instance = this;
 
-            ConfigManager.Init();
-
             string modLocation = instance.Info.Location.TrimEnd("LethalFauna.dll".ToCharArray());
             bundle = AssetBundle.LoadFromFile(modLocation + "lethalfauna");
-            if (bundle != null)
+            if (bundle == null)
             {
-                if (ConfigManager.enableSkunkBear.Value)
-                {
-                    var sb = bundle.LoadAsset<EnemyType>("Assets/LethalFauna/SkunkBear/SkunkBear.asset");
-                    var skunkBearTN = bundle.LoadAsset<TerminalNode>("Assets/LethalFauna/SkunkBear/Bestiary/SkunkBearTN.asset");
-                    var skunkBearTK = bundle.LoadAsset<TerminalKeyword>("Assets/LethalFauna/SkunkBear/Bestiary/SkunkBearTK.asset");
-                    NetworkPrefabs.RegisterNetworkPrefab(sb.enemyPrefab);
-                    LethalLib.Modules.Enemies.RegisterEnemy(sb, 100, Levels.LevelTypes.All, skunkBearTN, skunkBearTK);
-
-                    var sb_cub = bundle.LoadAsset<EnemyType>("Assets/LethalFauna/SkunkBear/SkunkCub.asset");
-                    var skunkCubTN = bundle.LoadAsset<TerminalNode>("Assets/LethalFauna/SkunkBear/Bestiary/SkunkCubTN.asset");
-                    var skunkCubTK = bundle.LoadAsset<TerminalKeyword>("Assets/LethalFauna/SkunkBear/Bestiary/SkunkCubTK.asset");
-                    NetworkPrefabs.RegisterNetworkPrefab(sb_cub.enemyPrefab);
-                    LethalLib.Modules.Enemies.RegisterEnemy(sb_cub, 100, Levels.LevelTypes.All, skunkCubTN, skunkCubTK);
-                }
-                if (ConfigManager.enableWatcherHarpy.Value)
-                {
-                    var wh = bundle.LoadAsset<EnemyType>("Assets/LethalFauna/WatcherHarpy/WatcherHarpy.asset");
-                    var watcherHarpyTN = bundle.LoadAsset<TerminalNode>("Assets/LethalFauna/WatcherHarpy/Bestiary/WatcherHarpyTN.asset");
-                    var watcherHarpyTK = bundle.LoadAsset<TerminalKeyword>("Assets/LethalFauna/WatcherHarpy/Bestiary/WatcherHarpyTK.asset");
-                    NetworkPrefabs.RegisterNetworkPrefab(wh.enemyPrefab);
-                    LethalLib.Modules.Enemies.RegisterEnemy(wh, 100, Levels.LevelTypes.All, watcherHarpyTN, watcherHarpyTK);
-                }
-            }
-            else
                 instance.Logger.LogError("Unable to locate the asset file! Enemies will not spawn.");
+                return;
+            }
+
+            // Initialize enemy handlers
+            List<Type> creatureHandlers = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.BaseType.IsGenericType && x.BaseType.GetGenericTypeDefinition() == typeof(EnemyHandler<>)).ToList<Type>();
+
+            foreach (Type type in creatureHandlers)
+            {
+                type.GetConstructor(new Type[] { })?.Invoke(new object[] { });
+            }
 
             harmony.PatchAll();
 
             instance.Logger.LogInfo($"{mName}-{mVersion} loaded!");
+        }
+
+        internal ConfigFile CreateConfig(string configName)
+        {
+            return new ConfigFile(Utility.CombinePaths(Paths.ConfigPath, "eXish.LethalFauna." + configName + ".cfg"),
+                saveOnInit: false, MetadataHelper.GetMetadata(this));
         }
     }
 }

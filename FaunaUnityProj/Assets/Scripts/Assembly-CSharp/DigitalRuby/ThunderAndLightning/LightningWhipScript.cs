@@ -1,4 +1,8 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace DigitalRuby.ThunderAndLightning
@@ -6,6 +10,60 @@ namespace DigitalRuby.ThunderAndLightning
 	[RequireComponent(typeof(AudioSource))]
 	public class LightningWhipScript : MonoBehaviour
 	{
+		[CompilerGenerated]
+		private sealed class _003CWhipForward_003Ed__10 : IEnumerator<object>, IEnumerator, IDisposable
+		{
+			private int _003C_003E1__state;
+
+			private object _003C_003E2__current;
+
+			public LightningWhipScript _003C_003E4__this;
+
+			object IEnumerator<object>.Current
+			{
+				[DebuggerHidden]
+				get
+				{
+					return null;
+				}
+			}
+
+			object IEnumerator.Current
+			{
+				[DebuggerHidden]
+				get
+				{
+					return null;
+				}
+			}
+
+			[DebuggerHidden]
+			public _003CWhipForward_003Ed__10(int _003C_003E1__state)
+			{
+			}
+
+			[DebuggerHidden]
+			void IDisposable.Dispose()
+			{
+			}
+
+			private bool MoveNext()
+			{
+				return false;
+			}
+
+			bool IEnumerator.MoveNext()
+			{
+				//ILSpy generated this explicit interface implementation from .override directive in MoveNext
+				return this.MoveNext();
+			}
+
+			[DebuggerHidden]
+			void IEnumerator.Reset()
+			{
+			}
+		}
+
 		public AudioClip WhipCrack;
 
 		public AudioClip WhipCrackThunder;
@@ -24,83 +82,20 @@ namespace DigitalRuby.ThunderAndLightning
 
 		private bool dragging;
 
-		private bool canWhip = true;
+		private bool canWhip;
 
+		[IteratorStateMachine(typeof(_003CWhipForward_003Ed__10))]
 		private IEnumerator WhipForward()
 		{
-			if (!canWhip)
-			{
-				yield break;
-			}
-			canWhip = false;
-			for (int i = 0; i < whipStart.transform.childCount; i++)
-			{
-				Rigidbody2D component = whipStart.transform.GetChild(i).gameObject.GetComponent<Rigidbody2D>();
-				if (component != null)
-				{
-					component.drag = 0f;
-				}
-			}
-			audioSource.PlayOneShot(WhipCrack);
-			whipSpring.GetComponent<SpringJoint2D>().enabled = true;
-			whipSpring.GetComponent<Rigidbody2D>().position = whipHandle.GetComponent<Rigidbody2D>().position + new Vector2(-15f, 5f);
-			yield return new WaitForSecondsLightning(0.2f);
-			whipSpring.GetComponent<Rigidbody2D>().position = whipHandle.GetComponent<Rigidbody2D>().position + new Vector2(15f, 2.5f);
-			yield return new WaitForSecondsLightning(0.15f);
-			audioSource.PlayOneShot(WhipCrackThunder, 0.5f);
-			yield return new WaitForSecondsLightning(0.15f);
-			whipEndStrike.GetComponent<ParticleSystem>().Play();
-			whipSpring.GetComponent<SpringJoint2D>().enabled = false;
-			yield return new WaitForSecondsLightning(0.65f);
-			for (int j = 0; j < whipStart.transform.childCount; j++)
-			{
-				Rigidbody2D component2 = whipStart.transform.GetChild(j).gameObject.GetComponent<Rigidbody2D>();
-				if (component2 != null)
-				{
-					component2.velocity = Vector2.zero;
-					component2.drag = 0.5f;
-				}
-			}
-			canWhip = true;
+			return null;
 		}
 
 		private void Start()
 		{
-			whipStart = GameObject.Find("WhipStart");
-			whipEndStrike = GameObject.Find("WhipEndStrike");
-			whipHandle = GameObject.Find("WhipHandle");
-			whipSpring = GameObject.Find("WhipSpring");
-			audioSource = GetComponent<AudioSource>();
 		}
 
 		private void Update()
 		{
-			if (!dragging && Input.GetMouseButtonDown(0))
-			{
-				Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				Collider2D collider2D = Physics2D.OverlapPoint(point);
-				if (collider2D != null && collider2D.gameObject == whipHandle)
-				{
-					dragging = true;
-					prevDrag = point;
-				}
-			}
-			else if (dragging && Input.GetMouseButton(0))
-			{
-				Vector2 vector = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				Vector2 vector2 = vector - prevDrag;
-				Rigidbody2D component = whipHandle.GetComponent<Rigidbody2D>();
-				component.MovePosition(component.position + vector2);
-				prevDrag = vector;
-			}
-			else
-			{
-				dragging = false;
-			}
-			if (Input.GetKeyDown(KeyCode.Space))
-			{
-				StartCoroutine(WhipForward());
-			}
 		}
 	}
 }

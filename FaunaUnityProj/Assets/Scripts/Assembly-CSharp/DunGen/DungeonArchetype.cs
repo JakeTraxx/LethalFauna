@@ -8,15 +8,15 @@ namespace DunGen
 	[CreateAssetMenu(fileName = "New Archetype", menuName = "DunGen/Dungeon Archetype", order = 700)]
 	public sealed class DungeonArchetype : ScriptableObject
 	{
-		public List<TileSet> TileSets = new List<TileSet>();
+		public List<TileSet> TileSets;
 
-		public List<TileSet> BranchCapTileSets = new List<TileSet>();
+		public List<TileSet> BranchCapTileSets;
 
-		public BranchCapType BranchCapType = BranchCapType.AsWellAs;
+		public BranchCapType BranchCapType;
 
-		public IntRange BranchingDepth = new IntRange(2, 4);
+		public IntRange BranchingDepth;
 
-		public IntRange BranchCount = new IntRange(0, 2);
+		public IntRange BranchCount;
 
 		public float StraightenChance;
 
@@ -24,17 +24,6 @@ namespace DunGen
 
 		public bool GetHasValidBranchCapTiles()
 		{
-			if (BranchCapTileSets.Count == 0)
-			{
-				return false;
-			}
-			foreach (TileSet branchCapTileSet in BranchCapTileSets)
-			{
-				if (branchCapTileSet.TileWeights.Weights.Count > 0)
-				{
-					return true;
-				}
-			}
 			return false;
 		}
 	}

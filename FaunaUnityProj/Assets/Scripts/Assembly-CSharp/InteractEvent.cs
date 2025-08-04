@@ -5,4 +5,7 @@ using UnityEngine.Events;
 [Serializable]
 public class InteractEvent : UnityEvent<PlayerControllerB>
 {
+	public InteractEvent()
+	{
+	}
 }

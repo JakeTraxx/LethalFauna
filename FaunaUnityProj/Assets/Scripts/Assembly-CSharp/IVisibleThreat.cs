@@ -15,10 +15,4 @@ public interface IVisibleThreat
 	Vector3 GetThreatVelocity();
 
 	float GetVisibility();
-
-	int SendSpecialBehaviour(int id);
-
-	GrabbableObject GetHeldObject();
-
-	bool IsThreatDead();
 }

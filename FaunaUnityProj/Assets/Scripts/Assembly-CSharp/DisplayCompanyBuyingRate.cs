@@ -7,6 +7,5 @@ public class DisplayCompanyBuyingRate : MonoBehaviour
 
 	private void Update()
 	{
-		displayText.text = $"{Mathf.RoundToInt(StartOfRound.Instance.companyBuyingRate * 100f)}%";
 	}
 }

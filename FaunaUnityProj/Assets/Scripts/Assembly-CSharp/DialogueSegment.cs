@@ -5,7 +5,7 @@ public class DialogueSegment
 {
 	public string bodyText;
 
-	public string speakerText = "SAFETY COMPUTER";
+	public string speakerText;
 
-	public float waitTime = 4f;
+	public float waitTime;
 }

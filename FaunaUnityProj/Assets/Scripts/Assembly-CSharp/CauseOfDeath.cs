@@ -12,10 +12,5 @@ public enum CauseOfDeath
 	Drowning = 9,
 	Abandoned = 10,
 	Electrocution = 11,
-	Kicking = 12,
-	Burning = 13,
-	Stabbing = 14,
-	Fan = 15,
-	Inertia = 16,
-	Snipped = 17
+	Kicking = 12
 }

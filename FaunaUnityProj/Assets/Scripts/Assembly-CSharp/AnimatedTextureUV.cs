@@ -1,8 +1,70 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class AnimatedTextureUV : MonoBehaviour
 {
+	[CompilerGenerated]
+	private sealed class _003CAnimateUV_003Ed__13 : IEnumerator<object>, IEnumerator, IDisposable
+	{
+		private int _003C_003E1__state;
+
+		private object _003C_003E2__current;
+
+		public AnimatedTextureUV _003C_003E4__this;
+
+		private float _003CmaxVertical_003E5__2;
+
+		private float _003CmaxHorizontal_003E5__3;
+
+		object IEnumerator<object>.Current
+		{
+			[DebuggerHidden]
+			get
+			{
+				return null;
+			}
+		}
+
+		object IEnumerator.Current
+		{
+			[DebuggerHidden]
+			get
+			{
+				return null;
+			}
+		}
+
+		[DebuggerHidden]
+		public _003CAnimateUV_003Ed__13(int _003C_003E1__state)
+		{
+		}
+
+		[DebuggerHidden]
+		void IDisposable.Dispose()
+		{
+		}
+
+		private bool MoveNext()
+		{
+			return false;
+		}
+
+		bool IEnumerator.MoveNext()
+		{
+			//ILSpy generated this explicit interface implementation from .override directive in MoveNext
+			return this.MoveNext();
+		}
+
+		[DebuggerHidden]
+		void IEnumerator.Reset()
+		{
+		}
+	}
+
 	private Material[] setMaterials;
 
 	public MeshRenderer meshRenderer;
@@ -11,11 +73,11 @@ public class AnimatedTextureUV : MonoBehaviour
 
 	public int materialIndex;
 
-	public int columns = 1;
+	public int columns;
 
-	public int rows = 1;
+	public int rows;
 
-	public float waitFrameTime = 0.005f;
+	public float waitFrameTime;
 
 	private float horizontalOffset;
 
@@ -27,57 +89,15 @@ public class AnimatedTextureUV : MonoBehaviour
 
 	private void OnEnable()
 	{
-		if (animateMaterial == null)
-		{
-			Debug.Log("Animating material now");
-			animateMaterial = StartCoroutine(AnimateUV());
-		}
 	}
 
 	private void OnDisable()
 	{
-		if (animateMaterial != null)
-		{
-			StopCoroutine(animateMaterial);
-		}
 	}
 
+	[IteratorStateMachine(typeof(_003CAnimateUV_003Ed__13))]
 	private IEnumerator AnimateUV()
 	{
-		yield return null;
-		if (skinnedMeshRenderer != null)
-		{
-			setMaterials = skinnedMeshRenderer.materials;
-			skinnedMesh = true;
-		}
-		else
-		{
-			setMaterials = meshRenderer.materials;
-		}
-		float maxVertical = 1f - 1f / (float)columns;
-		float maxHorizontal = 1f - 1f / (float)rows;
-		while (base.enabled)
-		{
-			yield return new WaitForSeconds(waitFrameTime);
-			horizontalOffset += 1f / (float)rows;
-			if (horizontalOffset > maxHorizontal)
-			{
-				horizontalOffset = 0f;
-				verticalOffset += 1f / (float)columns;
-				if (verticalOffset > maxVertical)
-				{
-					verticalOffset = 0f;
-				}
-			}
-			setMaterials[materialIndex].SetTextureOffset("_BaseColorMap", new Vector2(horizontalOffset, verticalOffset));
-			if (skinnedMesh)
-			{
-				skinnedMeshRenderer.materials = setMaterials;
-			}
-			else
-			{
-				skinnedMeshRenderer.materials = setMaterials;
-			}
-		}
+		return null;
 	}
 }

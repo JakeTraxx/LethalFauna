@@ -1,11 +1,70 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace DigitalRuby.ThunderAndLightning
 {
 	public class LightningWhipSpell : LightningSpellScript
 	{
+		[CompilerGenerated]
+		private sealed class _003CWhipForward_003Ed__7 : IEnumerator<object>, IEnumerator, IDisposable
+		{
+			private int _003C_003E1__state;
+
+			private object _003C_003E2__current;
+
+			public LightningWhipSpell _003C_003E4__this;
+
+			private Vector3 _003CwhipPositionForwards_003E5__2;
+
+			object IEnumerator<object>.Current
+			{
+				[DebuggerHidden]
+				get
+				{
+					return null;
+				}
+			}
+
+			object IEnumerator.Current
+			{
+				[DebuggerHidden]
+				get
+				{
+					return null;
+				}
+			}
+
+			[DebuggerHidden]
+			public _003CWhipForward_003Ed__7(int _003C_003E1__state)
+			{
+			}
+
+			[DebuggerHidden]
+			void IDisposable.Dispose()
+			{
+			}
+
+			private bool MoveNext()
+			{
+				return false;
+			}
+
+			bool IEnumerator.MoveNext()
+			{
+				//ILSpy generated this explicit interface implementation from .override directive in MoveNext
+				return this.MoveNext();
+			}
+
+			[DebuggerHidden]
+			void IEnumerator.Reset()
+			{
+			}
+		}
+
 		[Header("Whip")]
 		[Tooltip("Attach the whip to what object")]
 		public GameObject AttachTo;
@@ -28,82 +87,22 @@ namespace DigitalRuby.ThunderAndLightning
 		[HideInInspector]
 		public Action<Vector3> CollisionCallback;
 
+		[IteratorStateMachine(typeof(_003CWhipForward_003Ed__7))]
 		private IEnumerator WhipForward()
 		{
-			for (int i = 0; i < WhipStart.transform.childCount; i++)
-			{
-				Rigidbody component = WhipStart.transform.GetChild(i).gameObject.GetComponent<Rigidbody>();
-				if (component != null)
-				{
-					component.drag = 0f;
-					component.velocity = Vector3.zero;
-					component.angularVelocity = Vector3.zero;
-				}
-			}
-			WhipSpring.SetActive(value: true);
-			Vector3 position = WhipStart.GetComponent<Rigidbody>().position;
-			Vector3 whipPositionForwards;
-			Vector3 position2;
-			if (Physics.Raycast(position, Direction, out var hitInfo, MaxDistance, CollisionMask))
-			{
-				Vector3 normalized = (hitInfo.point - position).normalized;
-				whipPositionForwards = position + normalized * MaxDistance;
-				position2 = position - normalized * 25f;
-			}
-			else
-			{
-				whipPositionForwards = position + Direction * MaxDistance;
-				position2 = position - Direction * 25f;
-			}
-			WhipSpring.GetComponent<Rigidbody>().position = position2;
-			yield return new WaitForSecondsLightning(0.25f);
-			WhipSpring.GetComponent<Rigidbody>().position = whipPositionForwards;
-			yield return new WaitForSecondsLightning(0.1f);
-			if (WhipCrackAudioSource != null)
-			{
-				WhipCrackAudioSource.Play();
-			}
-			yield return new WaitForSecondsLightning(0.1f);
-			if (CollisionParticleSystem != null)
-			{
-				CollisionParticleSystem.Play();
-			}
-			ApplyCollisionForce(SpellEnd.transform.position);
-			WhipSpring.SetActive(value: false);
-			if (CollisionCallback != null)
-			{
-				CollisionCallback(SpellEnd.transform.position);
-			}
-			yield return new WaitForSecondsLightning(0.1f);
-			for (int j = 0; j < WhipStart.transform.childCount; j++)
-			{
-				Rigidbody component2 = WhipStart.transform.GetChild(j).gameObject.GetComponent<Rigidbody>();
-				if (component2 != null)
-				{
-					component2.velocity = Vector3.zero;
-					component2.angularVelocity = Vector3.zero;
-					component2.drag = 0.5f;
-				}
-			}
+			return null;
 		}
 
 		protected override void Start()
 		{
-			base.Start();
-			WhipSpring.SetActive(value: false);
-			WhipHandle.SetActive(value: false);
 		}
 
 		protected override void Update()
 		{
-			base.Update();
-			base.gameObject.transform.position = AttachTo.transform.position;
-			base.gameObject.transform.rotation = RotateWith.transform.rotation;
 		}
 
 		protected override void OnCastSpell()
 		{
-			StartCoroutine(WhipForward());
 		}
 
 		protected override void OnStopSpell()
@@ -112,14 +111,10 @@ namespace DigitalRuby.ThunderAndLightning
 
 		protected override void OnActivated()
 		{
-			base.OnActivated();
-			WhipHandle.SetActive(value: true);
 		}
 
 		protected override void OnDeactivated()
 		{
-			base.OnDeactivated();
-			WhipHandle.SetActive(value: false);
 		}
 	}
 }

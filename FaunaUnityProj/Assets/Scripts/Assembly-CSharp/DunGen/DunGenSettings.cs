@@ -1,4 +1,3 @@
-using System;
 using DunGen.Tags;
 using UnityEngine;
 
@@ -12,25 +11,17 @@ namespace DunGen
 		private DoorwaySocket defaultSocket;
 
 		[SerializeField]
-		private TagManager tagManager = new TagManager();
+		private TagManager tagManager;
 
-		public static DunGenSettings Instance => GetOrCreateInstance();
+		public static DunGenSettings Instance => null;
 
-		public DoorwaySocket DefaultSocket => defaultSocket;
+		public DoorwaySocket DefaultSocket => null;
 
-		public TagManager TagManager => tagManager;
+		public TagManager TagManager => null;
 
 		private static DunGenSettings GetOrCreateInstance()
 		{
-			if (instance == null)
-			{
-				instance = Resources.Load<DunGenSettings>("DunGen Settings");
-			}
-			if (instance == null)
-			{
-				throw new Exception("No instance of DunGen settings was found.");
-			}
-			return instance;
+			return null;
 		}
 	}
 }

@@ -1,9 +1,71 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
 
 public class LockPicker : GrabbableObject
 {
+	[CompilerGenerated]
+	private sealed class _003CsetRotationOnDoor_003Ed__18 : IEnumerator<object>, IEnumerator, IDisposable
+	{
+		private int _003C_003E1__state;
+
+		private object _003C_003E2__current;
+
+		public LockPicker _003C_003E4__this;
+
+		public bool lockPicker1;
+
+		public DoorLock doorScript;
+
+		object IEnumerator<object>.Current
+		{
+			[DebuggerHidden]
+			get
+			{
+				return null;
+			}
+		}
+
+		object IEnumerator.Current
+		{
+			[DebuggerHidden]
+			get
+			{
+				return null;
+			}
+		}
+
+		[DebuggerHidden]
+		public _003CsetRotationOnDoor_003Ed__18(int _003C_003E1__state)
+		{
+		}
+
+		[DebuggerHidden]
+		void IDisposable.Dispose()
+		{
+		}
+
+		private bool MoveNext()
+		{
+			return false;
+		}
+
+		bool IEnumerator.MoveNext()
+		{
+			//ILSpy generated this explicit interface implementation from .override directive in MoveNext
+			return this.MoveNext();
+		}
+
+		[DebuggerHidden]
+		void IEnumerator.Reset()
+		{
+		}
+	}
+
 	public AudioClip[] placeLockPickerClips;
 
 	public AudioClip[] finishPickingLockClips;
@@ -28,157 +90,55 @@ public class LockPicker : GrabbableObject
 
 	public override void EquipItem()
 	{
-		base.EquipItem();
-		RetractClaws();
 	}
 
 	public override void Start()
 	{
-		base.Start();
-		lockPickerAudio = base.gameObject.GetComponent<AudioSource>();
 	}
 
 	public override void ItemActivate(bool used, bool buttonDown = true)
 	{
-		if (playerHeldBy == null || !base.IsOwner)
-		{
-			return;
-		}
-		ray = new Ray(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward);
-		if (!Physics.Raycast(ray, out hit, 3f, 2816))
-		{
-			return;
-		}
-		DoorLock doorLock = hit.transform.GetComponent<DoorLock>();
-		if (doorLock == null)
-		{
-			TriggerPointToDoor component = hit.transform.GetComponent<TriggerPointToDoor>();
-			if (component != null)
-			{
-				doorLock = component.pointToDoor;
-			}
-		}
-		if (doorLock != null && doorLock.isLocked && !doorLock.isPickingLock)
-		{
-			playerHeldBy.DiscardHeldObject(placeObject: true, doorLock.NetworkObject, GetLockPickerDoorPosition(doorLock));
-			Debug.Log("discard held object called from lock picker");
-			PlaceLockPickerServerRpc(doorLock.NetworkObject, placeOnLockPicker1);
-			PlaceOnDoor(doorLock, placeOnLockPicker1);
-		}
 	}
 
 	private Vector3 GetLockPickerDoorPosition(DoorLock doorScript)
 	{
-		if (Vector3.Distance(doorScript.lockPickerPosition.position, playerHeldBy.transform.position) < Vector3.Distance(doorScript.lockPickerPosition2.position, playerHeldBy.transform.position))
-		{
-			placeOnLockPicker1 = true;
-			return doorScript.lockPickerPosition.localPosition;
-		}
-		placeOnLockPicker1 = false;
-		return doorScript.lockPickerPosition2.localPosition;
+		return default(Vector3);
 	}
 
 	[ServerRpc(RequireOwnership = false)]
 	public void PlaceLockPickerServerRpc(NetworkObjectReference doorObject, bool lockPicker1)
-			{
-				PlaceLockPickerClientRpc(doorObject, lockPicker1);
-			}
+	{
+	}
 
 	[ClientRpc]
 	public void PlaceLockPickerClientRpc(NetworkObjectReference doorObject, bool lockPicker1)
-{		{
-			if (doorObject.TryGet(out var networkObject))
-			{
-				DoorLock componentInChildren = networkObject.gameObject.GetComponentInChildren<DoorLock>();
-				PlaceOnDoor(componentInChildren, lockPicker1);
-			}
-			else
-			{
-				Debug.LogError("Lock picker was placed but we can't get the reference for the door it was placed on; placed by " + playerHeldBy.gameObject.name);
-			}
-		}
-}
-	public void PlaceOnDoor(DoorLock doorScript, bool lockPicker1)
 	{
-		if (!isOnDoor)
-		{
-			base.gameObject.GetComponent<AudioSource>().PlayOneShot(placeLockPickerClips[Random.Range(0, placeLockPickerClips.Length)]);
-			armsAnimator.SetBool("mounted", value: true);
-			armsAnimator.SetBool("picking", value: true);
-			lockPickerAudio.Play();
-			Debug.Log("Playing lock picker audio");
-			lockPickerAudio.pitch = Random.Range(0.94f, 1.06f);
-			isOnDoor = true;
-			isPickingLock = true;
-			doorScript.isPickingLock = true;
-			currentlyPickingDoor = doorScript;
-			if (setRotationCoroutine != null)
-			{
-				StopCoroutine(setRotationCoroutine);
-			}
-			setRotationCoroutine = StartCoroutine(setRotationOnDoor(doorScript, lockPicker1));
-		}
 	}
 
+	public void PlaceOnDoor(DoorLock doorScript, bool lockPicker1)
+	{
+	}
+
+	[IteratorStateMachine(typeof(_003CsetRotationOnDoor_003Ed__18))]
 	private IEnumerator setRotationOnDoor(DoorLock doorScript, bool lockPicker1)
 	{
-		float startTime = Time.timeSinceLevelLoad;
-		yield return new WaitUntil(() => !isHeld || Time.timeSinceLevelLoad - startTime > 10f);
-		Debug.Log("setting rotation of lock picker in lock picker script");
-		if (lockPicker1)
-		{
-			base.transform.localEulerAngles = doorScript.lockPickerPosition.localEulerAngles;
-		}
-		else
-		{
-			base.transform.localEulerAngles = doorScript.lockPickerPosition2.localEulerAngles;
-		}
-		setRotationCoroutine = null;
+		return null;
 	}
 
 	private void FinishPickingLock()
 	{
-		if (isPickingLock)
-		{
-			RetractClaws();
-			currentlyPickingDoor = null;
-			Vector3 position = base.transform.position;
-			base.transform.SetParent(null);
-			startFallingPosition = position;
-			FallToGround();
-			lockPickerAudio.PlayOneShot(finishPickingLockClips[Random.Range(0, finishPickingLockClips.Length)]);
-		}
 	}
 
 	private void RetractClaws()
 	{
-		isOnDoor = false;
-		isPickingLock = false;
-		armsAnimator.SetBool("mounted", value: false);
-		armsAnimator.SetBool("picking", value: false);
-		if (currentlyPickingDoor != null)
-		{
-			currentlyPickingDoor.isPickingLock = false;
-			currentlyPickingDoor.lockPickTimeLeft = currentlyPickingDoor.maxTimeLeft;
-			currentlyPickingDoor = null;
-		}
-		lockPickerAudio.Stop();
-		Debug.Log("pausing lock picker audio");
 	}
 
 	public override void Update()
 	{
-		base.Update();
-		if (base.IsServer && isPickingLock && currentlyPickingDoor != null && !currentlyPickingDoor.isLocked)
-		{
-			FinishPickingLock();
-			FinishPickingClientRpc();
-		}
 	}
 
 	[ClientRpc]
 	public void FinishPickingClientRpc()
-			{
-				FinishPickingLock();
-			}
+	{
+	}
 }

@@ -7,11 +7,11 @@ namespace DunGen
 	{
 		public TileSet TileSet;
 
-		public FloatRange NormalizedPathDepth = new FloatRange(0f, 1f);
+		public FloatRange NormalizedPathDepth;
 
-		public FloatRange NormalizedBranchDepth = new FloatRange(0f, 1f);
+		public FloatRange NormalizedBranchDepth;
 
-		public bool CanAppearOnMainPath = true;
+		public bool CanAppearOnMainPath;
 
 		public bool CanAppearOnBranchPath;
 

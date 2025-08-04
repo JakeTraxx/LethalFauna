@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace DigitalRuby.ThunderAndLightning
@@ -47,13 +48,13 @@ namespace DigitalRuby.ThunderAndLightning
 
 		public float ChaosFactor;
 
-		public float ChaosFactorForks = -1f;
+		public float ChaosFactorForks;
 
 		public float TrunkWidth;
 
-		public float EndWidthMultiplier = 0.5f;
+		public float EndWidthMultiplier;
 
-		public float Intensity = 1f;
+		public float Intensity;
 
 		public float GlowIntensity;
 
@@ -61,11 +62,11 @@ namespace DigitalRuby.ThunderAndLightning
 
 		public float Forkedness;
 
-		public int GenerationWhereForksStopSubtractor = 5;
+		public int GenerationWhereForksStopSubtractor;
 
-		public Color32 Color = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
+		public Color32 Color;
 
-		public Color32 MainTrunkTintColor = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
+		public Color32 MainTrunkTintColor;
 
 		private System.Random random;
 
@@ -73,21 +74,21 @@ namespace DigitalRuby.ThunderAndLightning
 
 		private System.Random randomOverride;
 
-		public float FadePercent = 0.15f;
+		public float FadePercent;
 
-		public float FadeInMultiplier = 1f;
+		public float FadeInMultiplier;
 
-		public float FadeFullyLitMultiplier = 1f;
+		public float FadeFullyLitMultiplier;
 
-		public float FadeOutMultiplier = 1f;
+		public float FadeOutMultiplier;
 
 		private float growthMultiplier;
 
-		public float ForkLengthMultiplier = 0.6f;
+		public float ForkLengthMultiplier;
 
-		public float ForkLengthVariance = 0.2f;
+		public float ForkLengthVariance;
 
-		public float ForkEndWidthMultiplier = 1f;
+		public float ForkEndWidthMultiplier;
 
 		public LightningLightParameters LightParameters;
 
@@ -97,24 +98,10 @@ namespace DigitalRuby.ThunderAndLightning
 		{
 			get
 			{
-				return generations;
+				return 0;
 			}
 			set
 			{
-				int b = Mathf.Clamp(value, 1, 8);
-				if (quality == LightningBoltQualitySetting.UseScript)
-				{
-					generations = b;
-					return;
-				}
-				int qualityLevel = QualitySettings.GetQualityLevel();
-				if (QualityMaximums.TryGetValue(qualityLevel, out var value2))
-				{
-					generations = Mathf.Min(value2.MaximumGenerations, b);
-					return;
-				}
-				generations = b;
-				Debug.LogError("Unable to read lightning quality settings from level " + qualityLevel);
 			}
 		}
 
@@ -122,12 +109,10 @@ namespace DigitalRuby.ThunderAndLightning
 		{
 			get
 			{
-				return currentRandom;
+				return null;
 			}
 			set
 			{
-				random = value ?? random;
-				currentRandom = randomOverride ?? random;
 			}
 		}
 
@@ -135,12 +120,10 @@ namespace DigitalRuby.ThunderAndLightning
 		{
 			get
 			{
-				return randomOverride;
+				return null;
 			}
 			set
 			{
-				randomOverride = value;
-				currentRandom = randomOverride ?? random;
 			}
 		}
 
@@ -148,139 +131,51 @@ namespace DigitalRuby.ThunderAndLightning
 		{
 			get
 			{
-				return growthMultiplier;
+				return 0f;
 			}
 			set
 			{
-				growthMultiplier = Mathf.Clamp(value, 0f, 0.999f);
 			}
 		}
 
-		public List<Vector3> Points { get; set; }
+		public List<Vector3> Points
+		{
+			[CompilerGenerated]
+			get
+			{
+				return null;
+			}
+			[CompilerGenerated]
+			set
+			{
+			}
+		}
 
 		static LightningBoltParameters()
 		{
-			randomSeed = Environment.TickCount;
-			cache = new List<LightningBoltParameters>();
-			Scale = 1f;
-			QualityMaximums = new Dictionary<int, LightningQualityMaximum>();
-			string[] names = QualitySettings.names;
-			for (int i = 0; i < names.Length; i++)
-			{
-				switch (i)
-				{
-				case 0:
-					QualityMaximums[i] = new LightningQualityMaximum
-					{
-						MaximumGenerations = 3,
-						MaximumLightPercent = 0f,
-						MaximumShadowPercent = 0f
-					};
-					break;
-				case 1:
-					QualityMaximums[i] = new LightningQualityMaximum
-					{
-						MaximumGenerations = 4,
-						MaximumLightPercent = 0f,
-						MaximumShadowPercent = 0f
-					};
-					break;
-				case 2:
-					QualityMaximums[i] = new LightningQualityMaximum
-					{
-						MaximumGenerations = 5,
-						MaximumLightPercent = 0.1f,
-						MaximumShadowPercent = 0f
-					};
-					break;
-				case 3:
-					QualityMaximums[i] = new LightningQualityMaximum
-					{
-						MaximumGenerations = 5,
-						MaximumLightPercent = 0.1f,
-						MaximumShadowPercent = 0f
-					};
-					break;
-				case 4:
-					QualityMaximums[i] = new LightningQualityMaximum
-					{
-						MaximumGenerations = 6,
-						MaximumLightPercent = 0.05f,
-						MaximumShadowPercent = 0.1f
-					};
-					break;
-				case 5:
-					QualityMaximums[i] = new LightningQualityMaximum
-					{
-						MaximumGenerations = 7,
-						MaximumLightPercent = 0.025f,
-						MaximumShadowPercent = 0.05f
-					};
-					break;
-				default:
-					QualityMaximums[i] = new LightningQualityMaximum
-					{
-						MaximumGenerations = 8,
-						MaximumLightPercent = 0.025f,
-						MaximumShadowPercent = 0.05f
-					};
-					break;
-				}
-			}
-		}
-
-		public LightningBoltParameters()
-		{
-			random = (currentRandom = new System.Random(randomSeed++));
-			Points = new List<Vector3>();
 		}
 
 		public float ForkMultiplier()
 		{
-			return (float)Random.NextDouble() * ForkLengthVariance + ForkLengthMultiplier;
+			return 0f;
 		}
 
 		public Vector3 ApplyVariance(Vector3 pos, Vector3 variance)
 		{
-			return new Vector3(pos.x + ((float)Random.NextDouble() * 2f - 1f) * variance.x, pos.y + ((float)Random.NextDouble() * 2f - 1f) * variance.y, pos.z + ((float)Random.NextDouble() * 2f - 1f) * variance.z);
+			return default(Vector3);
 		}
 
 		public void Reset()
 		{
-			Start = (End = Vector3.zero);
-			Generator = null;
-			SmoothingFactor = 0;
-			RandomOverride = null;
-			CustomTransform = null;
-			if (Points != null)
-			{
-				Points.Clear();
-			}
 		}
 
 		public static LightningBoltParameters GetOrCreateParameters()
 		{
-			LightningBoltParameters result;
-			if (cache.Count == 0)
-			{
-				result = new LightningBoltParameters();
-			}
-			else
-			{
-				int index = cache.Count - 1;
-				result = cache[index];
-				cache.RemoveAt(index);
-			}
-			return result;
+			return null;
 		}
 
 		public static void ReturnParametersToCache(LightningBoltParameters p)
 		{
-			if (!cache.Contains(p))
-			{
-				p.Reset();
-				cache.Add(p);
-			}
 		}
 	}
 }

@@ -7,29 +7,15 @@ namespace DunGen
 	{
 		private static CoroutineHelper instance;
 
-		private static CoroutineHelper Instance
-		{
-			get
-			{
-				if (instance == null)
-				{
-					instance = new GameObject("DunGen Coroutine Helper")
-					{
-						hideFlags = HideFlags.HideInHierarchy
-					}.AddComponent<CoroutineHelper>();
-				}
-				return instance;
-			}
-		}
+		private static CoroutineHelper Instance => null;
 
 		public static Coroutine Start(IEnumerator routine)
 		{
-			return Instance.StartCoroutine(routine);
+			return null;
 		}
 
 		public static void StopAll()
 		{
-			Instance.StopAllCoroutines();
 		}
 	}
 }

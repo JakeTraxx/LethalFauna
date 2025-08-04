@@ -15,33 +15,15 @@ namespace DunGen.Tags
 
 		public TagPair(Tag a, Tag b)
 		{
-			TagA = a;
-			TagB = b;
 		}
 
 		public override string ToString()
 		{
-			return $"{TagA.Name} <-> {TagB.Name}";
+			return null;
 		}
 
 		public bool Matches(Tag a, Tag b, bool twoWay)
 		{
-			if (twoWay)
-			{
-				if (!(a == TagA) || !(b == TagB))
-				{
-					if (a == TagB)
-					{
-						return b == TagA;
-					}
-					return false;
-				}
-				return true;
-			}
-			if (a == TagA)
-			{
-				return b == TagB;
-			}
 			return false;
 		}
 	}

@@ -1,8 +1,70 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class ElevatorAnimationEvents : MonoBehaviour
 {
+	[CompilerGenerated]
+	private sealed class _003CfadeAudioIn_003Ed__11 : IEnumerator<object>, IEnumerator, IDisposable
+	{
+		private int _003C_003E1__state;
+
+		private object _003C_003E2__current;
+
+		public bool fadeIn;
+
+		public ElevatorAnimationEvents _003C_003E4__this;
+
+		private int _003Ci_003E5__2;
+
+		object IEnumerator<object>.Current
+		{
+			[DebuggerHidden]
+			get
+			{
+				return null;
+			}
+		}
+
+		object IEnumerator.Current
+		{
+			[DebuggerHidden]
+			get
+			{
+				return null;
+			}
+		}
+
+		[DebuggerHidden]
+		public _003CfadeAudioIn_003Ed__11(int _003C_003E1__state)
+		{
+		}
+
+		[DebuggerHidden]
+		void IDisposable.Dispose()
+		{
+		}
+
+		private bool MoveNext()
+		{
+			return false;
+		}
+
+		bool IEnumerator.MoveNext()
+		{
+			//ILSpy generated this explicit interface implementation from .override directive in MoveNext
+			return this.MoveNext();
+		}
+
+		[DebuggerHidden]
+		void IEnumerator.Reset()
+		{
+		}
+	}
+
 	public RoundManager roundManager;
 
 	public AudioSource audioToPlay;
@@ -13,81 +75,36 @@ public class ElevatorAnimationEvents : MonoBehaviour
 
 	public void PlayAudio(AudioClip SFXclip)
 	{
-		if (roundManager.ElevatorLowering || roundManager.ElevatorRunning)
-		{
-			audioToPlay.clip = SFXclip;
-			audioToPlay.Play();
-		}
 	}
 
 	public void PlayAudio2(AudioClip SFXclip)
 	{
-		if (roundManager.ElevatorLowering || roundManager.ElevatorRunning)
-		{
-			audioToPlay2.clip = SFXclip;
-			audioToPlay2.Play();
-		}
 	}
 
 	public void PlayAudioOneshot(AudioClip SFXclip)
 	{
-		Debug.Log($"elevator running? : {roundManager.ElevatorRunning}");
-		if (roundManager.ElevatorLowering || roundManager.ElevatorRunning)
-		{
-			audioToPlay.PlayOneShot(SFXclip);
-		}
 	}
 
 	public void PlayAudio2Oneshot(AudioClip SFXclip)
 	{
-		if (roundManager.ElevatorLowering || roundManager.ElevatorRunning)
-		{
-			audioToPlay2.PlayOneShot(SFXclip);
-		}
 	}
 
 	public void StopAudio(AudioSource audio)
 	{
-		audio.Stop();
 	}
 
 	public void FadeAudioOut(AudioSource audio)
 	{
-		if (fadeCoroutine != null)
-		{
-			StopCoroutine(fadeCoroutine);
-		}
-		fadeCoroutine = StartCoroutine(fadeAudioIn(fadeIn: false));
 	}
 
 	public void FadeAudioIn(AudioSource audio)
 	{
-		if (fadeCoroutine != null)
-		{
-			StopCoroutine(fadeCoroutine);
-		}
-		fadeCoroutine = StartCoroutine(fadeAudioIn(fadeIn: true));
 	}
 
+	[IteratorStateMachine(typeof(_003CfadeAudioIn_003Ed__11))]
 	private IEnumerator fadeAudioIn(bool fadeIn)
 	{
-		if (fadeIn)
-		{
-			audioToPlay2.volume = 0f;
-			for (int i = 0; i < 20; i++)
-			{
-				yield return null;
-				audioToPlay2.volume += 0.05f;
-			}
-		}
-		else
-		{
-			for (int j = 0; j < 20; j++)
-			{
-				audioToPlay2.volume -= 0.05f;
-			}
-			audioToPlay2.Stop();
-		}
+		return null;
 	}
 
 	public void LoadNewFloor()
@@ -96,45 +113,13 @@ public class ElevatorAnimationEvents : MonoBehaviour
 
 	public void ElevatorFullyRunning()
 	{
-		roundManager.isSpawningEnemies = false;
-		roundManager.DetectElevatorIsRunning();
-		if (GameNetworkManager.Instance.localPlayerController != null && !GameNetworkManager.Instance.localPlayerController.isPlayerDead)
-		{
-			if (!GameNetworkManager.Instance.localPlayerController.isInElevator)
-			{
-				Debug.Log($"Killing player obj #{GameNetworkManager.Instance.localPlayerController.playerClientId}, they were not in the ship when it left.");
-				GameNetworkManager.Instance.localPlayerController.KillPlayer(Vector3.zero, spawnBody: false, CauseOfDeath.Abandoned);
-				HUDManager.Instance.AddTextToChatOnServer(GameNetworkManager.Instance.localPlayerController.playerUsername + " was left behind.");
-			}
-			else
-			{
-				roundManager.playersManager.ForcePlayerIntoShip();
-			}
-		}
-		roundManager.playersManager.ShipHasLeft();
-		SetBodiesKinematic();
 	}
 
 	private void SetBodiesKinematic()
 	{
-		DeadBodyInfo[] array = Object.FindObjectsOfType<DeadBodyInfo>();
-		for (int i = 0; i < array.Length; i++)
-		{
-			if (StartOfRound.Instance.shipBounds.bounds.Contains(array[i].bodyParts[5].position))
-			{
-				array[i].isInShip = true;
-			}
-			if (array[i].isInShip && array[i].grabBodyObject != null && !array[i].grabBodyObject.isHeld)
-			{
-				array[i].grabBodyObject.grabbable = false;
-				array[i].grabBodyObject.grabbableToEnemies = false;
-				array[i].SetBodyPartsKinematic();
-			}
-		}
 	}
 
 	public void ElevatorNoLongerRunning()
 	{
-		roundManager.ElevatorRunning = false;
 	}
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace DigitalRuby.ThunderAndLightning
@@ -17,32 +18,41 @@ namespace DigitalRuby.ThunderAndLightning
 
 		public object UserInfo;
 
-		private static readonly List<LightningCustomTransformStateInfo> cache = new List<LightningCustomTransformStateInfo>();
+		private static readonly List<LightningCustomTransformStateInfo> cache;
 
-		public LightningCustomTransformState State { get; set; }
+		public LightningCustomTransformState State
+		{
+			[CompilerGenerated]
+			get
+			{
+				return default(LightningCustomTransformState);
+			}
+			[CompilerGenerated]
+			set
+			{
+			}
+		}
 
-		public LightningBoltParameters Parameters { get; set; }
+		public LightningBoltParameters Parameters
+		{
+			[CompilerGenerated]
+			get
+			{
+				return null;
+			}
+			[CompilerGenerated]
+			set
+			{
+			}
+		}
 
 		public static LightningCustomTransformStateInfo GetOrCreateStateInfo()
 		{
-			if (cache.Count == 0)
-			{
-				return new LightningCustomTransformStateInfo();
-			}
-			int index = cache.Count - 1;
-			LightningCustomTransformStateInfo result = cache[index];
-			cache.RemoveAt(index);
-			return result;
+			return null;
 		}
 
 		public static void ReturnStateInfoToCache(LightningCustomTransformStateInfo info)
 		{
-			if (info != null)
-			{
-				info.Transform = (info.StartTransform = (info.EndTransform = null));
-				info.UserInfo = null;
-				cache.Add(info);
-			}
 		}
 	}
 }

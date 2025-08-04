@@ -10,7 +10,7 @@ namespace DigitalRuby.ThunderAndLightning
 
 		public override string ToString()
 		{
-			return Start.ToString() + ", " + End.ToString();
+			return null;
 		}
 	}
 }

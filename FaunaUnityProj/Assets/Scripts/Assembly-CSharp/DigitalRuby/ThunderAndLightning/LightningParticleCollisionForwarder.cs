@@ -11,23 +11,14 @@ namespace DigitalRuby.ThunderAndLightning
 
 		private ParticleSystem _particleSystem;
 
-		private readonly List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
+		private readonly List<ParticleCollisionEvent> collisionEvents;
 
 		private void Start()
 		{
-			_particleSystem = GetComponent<ParticleSystem>();
 		}
 
 		private void OnParticleCollision(GameObject other)
 		{
-			if (CollisionHandler is ICollisionHandler collisionHandler)
-			{
-				int num = _particleSystem.GetCollisionEvents(other, collisionEvents);
-				if (num != 0)
-				{
-					collisionHandler.HandleCollision(other, collisionEvents, num);
-				}
-			}
 		}
 	}
 }

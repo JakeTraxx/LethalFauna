@@ -4,11 +4,11 @@ namespace DunGen
 {
 	public static class StringUtil
 	{
-		private static Regex capitalLetterPattern = new Regex("([A-Z])");
+		private static Regex capitalLetterPattern;
 
 		public static string SplitCamelCase(string input)
 		{
-			return capitalLetterPattern.Replace(input, " $1").Trim();
+			return null;
 		}
 	}
 }

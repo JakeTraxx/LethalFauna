@@ -1,9 +1,68 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class BoomboxItem : GrabbableObject
 {
+	[CompilerGenerated]
+	private sealed class _003CmusicPitchDown_003Ed__12 : IEnumerator<object>, IEnumerator, IDisposable
+	{
+		private int _003C_003E1__state;
+
+		private object _003C_003E2__current;
+
+		public BoomboxItem _003C_003E4__this;
+
+		private int _003Ci_003E5__2;
+
+		object IEnumerator<object>.Current
+		{
+			[DebuggerHidden]
+			get
+			{
+				return null;
+			}
+		}
+
+		object IEnumerator.Current
+		{
+			[DebuggerHidden]
+			get
+			{
+				return null;
+			}
+		}
+
+		[DebuggerHidden]
+		public _003CmusicPitchDown_003Ed__12(int _003C_003E1__state)
+		{
+		}
+
+		[DebuggerHidden]
+		void IDisposable.Dispose()
+		{
+		}
+
+		private bool MoveNext()
+		{
+			return false;
+		}
+
+		bool IEnumerator.MoveNext()
+		{
+			//ILSpy generated this explicit interface implementation from .override directive in MoveNext
+			return this.MoveNext();
+		}
+
+		[DebuggerHidden]
+		void IEnumerator.Reset()
+		{
+		}
+	}
+
 	public AudioSource boomboxAudio;
 
 	public AudioClip[] musicAudios;
@@ -24,89 +83,31 @@ public class BoomboxItem : GrabbableObject
 
 	public override void Start()
 	{
-		base.Start();
-		playersManager = UnityEngine.Object.FindObjectOfType<StartOfRound>();
-		roundManager = UnityEngine.Object.FindObjectOfType<RoundManager>();
-		musicRandomizer = new System.Random(playersManager.randomMapSeed - 10);
 	}
 
 	public override void ItemActivate(bool used, bool buttonDown = true)
 	{
-		base.ItemActivate(used, buttonDown);
-		StartMusic(used);
 	}
 
 	private void StartMusic(bool startMusic, bool pitchDown = false)
 	{
-		if (startMusic)
-		{
-			boomboxAudio.clip = musicAudios[musicRandomizer.Next(0, musicAudios.Length)];
-			boomboxAudio.pitch = 1f;
-			boomboxAudio.Play();
-		}
-		else if (isPlayingMusic)
-		{
-			if (pitchDown)
-			{
-				StartCoroutine(musicPitchDown());
-			}
-			else
-			{
-				boomboxAudio.Stop();
-				boomboxAudio.PlayOneShot(stopAudios[UnityEngine.Random.Range(0, stopAudios.Length)]);
-			}
-			timesPlayedWithoutTurningOff = 0;
-		}
-		isBeingUsed = startMusic;
-		isPlayingMusic = startMusic;
 	}
 
+	[IteratorStateMachine(typeof(_003CmusicPitchDown_003Ed__12))]
 	private IEnumerator musicPitchDown()
 	{
-		for (int i = 0; i < 30; i++)
-		{
-			yield return null;
-			boomboxAudio.pitch -= 0.033f;
-			if (boomboxAudio.pitch <= 0f)
-			{
-				break;
-			}
-		}
-		boomboxAudio.Stop();
-		boomboxAudio.PlayOneShot(stopAudios[UnityEngine.Random.Range(0, stopAudios.Length)]);
+		return null;
 	}
 
 	public override void UseUpBatteries()
 	{
-		base.UseUpBatteries();
-		StartMusic(startMusic: false, pitchDown: true);
 	}
 
 	public override void PocketItem()
 	{
-		base.PocketItem();
-		StartMusic(startMusic: false);
 	}
 
 	public override void Update()
 	{
-		base.Update();
-		if (isPlayingMusic)
-		{
-			if (noiseInterval <= 0f)
-			{
-				noiseInterval = 1f;
-				timesPlayedWithoutTurningOff++;
-				roundManager.PlayAudibleNoise(base.transform.position, 16f, 0.9f, timesPlayedWithoutTurningOff, noiseIsInsideClosedShip: false, 5);
-			}
-			else
-			{
-				noiseInterval -= Time.deltaTime;
-			}
-			if (insertedBattery.charge < 0.05f)
-			{
-				boomboxAudio.pitch = 1f - (0.05f - insertedBattery.charge) * 4f;
-			}
-		}
 	}
 }

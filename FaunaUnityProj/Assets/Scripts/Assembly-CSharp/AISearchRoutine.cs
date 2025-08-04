@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class AISearchRoutine
 {
-	public List<GameObject> unsearchedNodes = new List<GameObject>();
+	public List<GameObject> unsearchedNodes;
 
 	public GameObject currentTargetNode;
 
@@ -17,7 +17,7 @@ public class AISearchRoutine
 
 	public Vector3 currentSearchStartPosition;
 
-	public bool loopSearch = true;
+	public bool loopSearch;
 
 	public int timesFinishingSearch;
 
@@ -27,19 +27,15 @@ public class AISearchRoutine
 
 	public bool calculatingNodeInSearch;
 
-	public bool startedSearchAtSelf;
-
 	[Space(5f)]
-	public float searchWidth = 200f;
+	public float searchWidth;
 
-	public float searchPrecision = 5f;
+	public float searchPrecision;
 
 	public bool randomized;
 
-	public bool onlySearchNodesInLOS;
-
 	public float GetCurrentDistanceOfSearch()
 	{
-		return Vector3.Distance(currentSearchStartPosition, currentTargetNode.transform.position);
+		return 0f;
 	}
 }

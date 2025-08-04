@@ -9,18 +9,15 @@ namespace DunGen.Graph
 		{
 			get
 			{
-				return flow.Lines[index];
+				return null;
 			}
 			set
 			{
-				index = flow.Lines.IndexOf(value);
 			}
 		}
 
 		public FlowLineReference(DungeonFlow flowGraph, GraphLine line)
 		{
-			flow = flowGraph;
-			Line = line;
 		}
 	}
 }
