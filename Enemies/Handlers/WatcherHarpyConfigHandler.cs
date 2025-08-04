@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LethalFauna.Enemies.Handlers
 {
-    internal class WatcherHarpyConfigHandler : ConfigHandler
+    internal class WatcherHarpyConfigHandler : ConfigHandler<WatcherHarpyConfigHandler>
     {
         public ConfigEntry<bool> enableWatcherHarpy;
         public WatcherHarpyConfigHandler(ConfigFile config) : base(config)

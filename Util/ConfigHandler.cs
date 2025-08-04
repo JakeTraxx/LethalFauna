@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LethalFauna.Util
 {
-    internal abstract class ConfigHandler
+    internal abstract class ConfigHandler<T> where T : ConfigHandler<T>
     {
         // Other config vars will go here in other classes
 

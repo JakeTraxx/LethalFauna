@@ -38,7 +38,7 @@ namespace LethalFauna
             }
 
             // Initialize enemy handlers
-            List<Type> creatureHandlers = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.BaseType.GetGenericTypeDefinition() == typeof(EnemyHandler<>)).ToList<Type>();
+            List<Type> creatureHandlers = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.BaseType.IsGenericType && x.BaseType.GetGenericTypeDefinition() == typeof(EnemyHandler<>)).ToList<Type>();
 
             foreach (Type type in creatureHandlers)
             {

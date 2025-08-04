@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LethalFauna.Enemies.Handlers
 {
-    internal class SkunkBearConfigHandler : ConfigHandler
+    internal class SkunkBearConfigHandler : ConfigHandler<SkunkBearConfigHandler>
     {
         public ConfigEntry<bool> enableSkunkBear;
 
