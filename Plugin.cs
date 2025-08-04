@@ -34,6 +34,7 @@ namespace LethalFauna
             if (bundle == null)
             {
                 instance.Logger.LogError("Unable to locate the asset file! Enemies will not spawn.");
+                return;
             }
 
             // Initialize enemy handlers
