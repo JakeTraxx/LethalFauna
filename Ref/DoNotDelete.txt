@@ -1,0 +1,1 @@
+Move bepinx/plugin dependencies here so that this works on any device
