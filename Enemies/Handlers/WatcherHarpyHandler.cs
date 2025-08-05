@@ -16,7 +16,7 @@ namespace LethalFauna.Enemies.Handlers
         public WatcherHarpyHandler()
         {
             Config = new WatcherHarpyConfigHandler(LethalFaunaMod.instance.CreateConfig("watcherharpy"));
-            if (!Config.enableWatcherHarpy.Value)
+            if (!Config.EnableWatcherHarpy)
                 return;
 
             AssetBundle bundle = LethalFaunaMod.bundle;

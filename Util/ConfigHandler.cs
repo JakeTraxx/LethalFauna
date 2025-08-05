@@ -31,7 +31,36 @@ namespace LethalFauna.Util
                             ).Value
                         );
                     }
-                    //else if () Todo: Add more types.
+                    else if (type == typeof(string))
+                    {
+                        field.SetValue(this, config.Bind(
+                                "General",
+                                field.Name,
+                                (string)field.GetValue(this),
+                                ((ConfigAttribute)field.GetCustomAttribute(typeof(ConfigAttribute), false)).Description
+                            ).Value
+                        );
+                    }
+                    else if (type == typeof(int))
+                    {
+                        field.SetValue(this, config.Bind(
+                                "General",
+                                field.Name,
+                                (int)field.GetValue(this),
+                                ((ConfigAttribute)field.GetCustomAttribute(typeof(ConfigAttribute), false)).Description
+                            ).Value
+                        );
+                    }
+                    else if (type == typeof(float))
+                    {
+                        field.SetValue(this, config.Bind(
+                                "General",
+                                field.Name,
+                                (bool)field.GetValue(this),
+                                ((ConfigAttribute)field.GetCustomAttribute(typeof(ConfigAttribute), false)).Description
+                            ).Value
+                        );
+                    }
                 }
             }
         }
