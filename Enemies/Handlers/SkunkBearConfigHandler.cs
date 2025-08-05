@@ -1,5 +1,6 @@
 ﻿using BepInEx.Configuration;
 using LethalFauna.Util;
+using LethalFauna.Util.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,12 @@ namespace LethalFauna.Enemies.Handlers
 {
     internal class SkunkBearConfigHandler : ConfigHandler<SkunkBearConfigHandler>
     {
-        public ConfigEntry<bool> enableSkunkBear;
+        [Config("Enables spawning of Skunk Bears.")]
+        public bool EnableSkunkBear = true;
 
         public SkunkBearConfigHandler(ConfigFile config) : base(config)
         {
-            enableSkunkBear = config.Bind("Skunk Bear Settings", "enableSkunkBear", true, "Enables spawning of Skunk Bears.");
+            // Run any extra config setup here
         }
     }
 }

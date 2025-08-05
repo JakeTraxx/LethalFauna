@@ -13,7 +13,7 @@ namespace LethalFauna.Enemies.Handlers
         public ConfigEntry<bool> enableWatcherHarpy;
         public WatcherHarpyConfigHandler(ConfigFile config) : base(config)
         {
-            enableWatcherHarpy = config.Bind("Watcher Harpy Settings", "enableWatcherHarpy", true, "Enables spawning of Watcher Harpys.");
+            enableWatcherHarpy = config.Bind("General", "enableWatcherHarpy", true, "Enables spawning of Watcher Harpys.");
         }
     }
 }

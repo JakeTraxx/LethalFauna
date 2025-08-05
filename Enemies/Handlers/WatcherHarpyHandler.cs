@@ -1,4 +1,5 @@
-﻿using LethalLib.Modules;
+﻿using LethalFauna.Util;
+using LethalLib.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 namespace LethalFauna.Enemies.Handlers
 {
-    internal class WatcherHarpyHandler
+    internal class WatcherHarpyHandler : EnemyHandler<WatcherHarpyHandler>
     {
         public static WatcherHarpyConfigHandler Config;
 
