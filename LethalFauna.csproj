@@ -108,6 +108,7 @@
     <Compile Include="Enemies\WatcherHarpyAI.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Attributes\ConfigAttribute.cs" />
     <Compile Include="Util\ConfigHandler.cs" />
     <Compile Include="Util\EnemyHandler.cs" />
   </ItemGroup>

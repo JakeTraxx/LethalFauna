@@ -17,7 +17,7 @@ namespace LethalFauna.Enemies.Handlers
         {
             Config = new SkunkBearConfigHandler(LethalFaunaMod.instance.CreateConfig("skunkbear"));
 
-            if (!Config.enableSkunkBear.Value)
+            if (!Config.EnableSkunkBear)
                 return;
 
             AssetBundle bundle = LethalFaunaMod.bundle;

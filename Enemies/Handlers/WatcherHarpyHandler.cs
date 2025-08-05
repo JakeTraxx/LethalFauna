@@ -1,4 +1,5 @@
-﻿using LethalLib.Modules;
+﻿using LethalFauna.Util;
+using LethalLib.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +9,14 @@ using UnityEngine;
 
 namespace LethalFauna.Enemies.Handlers
 {
-    internal class WatcherHarpyHandler
+    internal class WatcherHarpyHandler : EnemyHandler<WatcherHarpyHandler>
     {
         public static WatcherHarpyConfigHandler Config;
 
         public WatcherHarpyHandler()
         {
             Config = new WatcherHarpyConfigHandler(LethalFaunaMod.instance.CreateConfig("watcherharpy"));
-            if (!Config.enableWatcherHarpy.Value)
+            if (!Config.EnableWatcherHarpy)
                 return;
 
             AssetBundle bundle = LethalFaunaMod.bundle;

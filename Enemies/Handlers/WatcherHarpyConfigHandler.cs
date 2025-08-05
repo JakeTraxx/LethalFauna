@@ -1,5 +1,6 @@
 ﻿using BepInEx.Configuration;
 using LethalFauna.Util;
+using LethalFauna.Util.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace LethalFauna.Enemies.Handlers
 {
     internal class WatcherHarpyConfigHandler : ConfigHandler<WatcherHarpyConfigHandler>
     {
-        public ConfigEntry<bool> enableWatcherHarpy;
+        [Config("Enables spawning of Watcher Harpys.")]
+        public bool EnableWatcherHarpy = true;
+
         public WatcherHarpyConfigHandler(ConfigFile config) : base(config)
         {
-            enableWatcherHarpy = config.Bind("Watcher Harpy Settings", "enableWatcherHarpy", true, "Enables spawning of Watcher Harpys.");
+            // Run any extra config setup here
         }
     }
 }
