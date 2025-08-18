@@ -362,3 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Ref/*.dll
+/FaunaUnityProj/AssetBundles/StandaloneWindows/lethalfauna
+/FaunaUnityProj/AssetBundles/StandaloneWindows/lethalfauna.manifest
+/FaunaUnityProj/AssetBundles/StandaloneWindows/StandaloneWindows
+/FaunaUnityProj/AssetBundles/StandaloneWindows/StandaloneWindows.manifest
