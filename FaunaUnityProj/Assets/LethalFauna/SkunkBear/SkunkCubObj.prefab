@@ -178,7 +178,7 @@ MonoBehaviour:
   maxRange: 15
   minRange: 1
   requiresLineOfSight: 1
-  headerText: SkunkBear
+  headerText: Skunk Bearling
   subText: 
   scrapValue: 0
   creatureScanID: 7014
@@ -1394,7 +1394,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7261056683159870519}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1801896617, guid: c4050477f8ae8b14ebf00034419497eb, type: 3}
+  m_Script: {fileID: -1801896617, guid: 00485b2dc890ac949af28ff8c9be945a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: {fileID: 11400000, guid: fcd9d21e6eb93b349bf4c5394b3ab876, type: 2}
@@ -1493,7 +1493,7 @@ MonoBehaviour:
   ventAnimationFinished: 0
   isEnemyDead: 0
   daytimeEnemyLeaving: 0
-  enemyHP: 3
+  enemyHP: 6
   openDoorSpeedMultiplier: 0
   useSecondaryAudiosOnAnimatedObjects: 0
   currentSearch:

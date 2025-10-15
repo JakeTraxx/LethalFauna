@@ -519,7 +519,7 @@ MonoBehaviour:
   maxRange: 15
   minRange: 1
   requiresLineOfSight: 1
-  headerText: SkunkBear
+  headerText: Skunk Bear
   subText: 
   scrapValue: 0
   creatureScanID: 7014
@@ -2710,7 +2710,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7261056683159870519}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 92376419, guid: c4050477f8ae8b14ebf00034419497eb, type: 3}
+  m_Script: {fileID: 92376419, guid: 00485b2dc890ac949af28ff8c9be945a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: {fileID: 11400000, guid: 133b201488d7fb6cfbcd46e1309fc155, type: 2}
