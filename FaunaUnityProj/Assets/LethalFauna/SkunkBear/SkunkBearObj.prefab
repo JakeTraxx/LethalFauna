@@ -3126,14 +3126,14 @@ MonoBehaviour:
   TransitionStateInfoList:
   - IsCrossFadeExit: 0
     Layer: 0
-    OriginatingState: -542986255
+    OriginatingState: -1701686356
     DestinationState: 1175268715
     TransitionDuration: 0.25
     TriggerNameHash: -796645620
     TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 0
-    OriginatingState: -542986255
+    OriginatingState: -1701686356
     DestinationState: 1823738765
     TransitionDuration: 0.25
     TriggerNameHash: -1009981414
