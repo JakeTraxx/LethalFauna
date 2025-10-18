@@ -1,22 +1,20 @@
 ManifestFileVersion: 0
-CRC: 382761499
+CRC: 902131911
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 1031bb97ab4c2b399a4aa03afca765b9
+    Hash: a6a21dae3e3ad0c6ae4900026d83a011
   TypeTreeHash:
     serializedVersion: 2
-    Hash: a70d82005c57238e2ead8b1c5c97ddeb
+    Hash: af591e73c6be2c67db1b2fc3a13fe22b
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 1031bb97ab4c2b399a4aa03afca765b9
+    Hash: a6a21dae3e3ad0c6ae4900026d83a011
 HashAppended: 0
 ClassTypes:
 - Class: 1
   Script: {instanceID: 0}
 - Class: 4
-  Script: {instanceID: 0}
-- Class: 20
   Script: {instanceID: 0}
 - Class: 21
   Script: {instanceID: 0}
@@ -44,14 +42,12 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 95
   Script: {instanceID: 0}
-- Class: 108
-  Script: {instanceID: 0}
 - Class: 114
-  Script: {fileID: 11500000, guid: 23c1ce4fb46143f46bc5cb5224c934f6, type: 3}
+  Script: {fileID: 92376419, guid: 00485b2dc890ac949af28ff8c9be945a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e1fbb15bf92b84f40a1eb030765b5afe, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 65d3fcb39dd67306e9bb17a603308070, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 04f75356a7e9c978bddc7d568e58a50b, type: 3}
 - Class: 114
@@ -65,14 +61,16 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
 - Class: 114
-  Script: {fileID: 92376419, guid: c4050477f8ae8b14ebf00034419497eb, type: 3}
+  Script: {fileID: -1072775802, guid: 00485b2dc890ac949af28ff8c9be945a, type: 3}
 - Class: 114
-  Script: {fileID: -317765895, guid: c4050477f8ae8b14ebf00034419497eb, type: 3}
+  Script: {fileID: -1801896617, guid: 00485b2dc890ac949af28ff8c9be945a, type: 3}
+- Class: 114
+  Script: {fileID: -317765895, guid: 00485b2dc890ac949af28ff8c9be945a, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: d3cecf05b78b173605122a700874719c, type: 3}
 - Class: 115
   Script: {instanceID: 0}
-- Class: 135
+- Class: 117
   Script: {instanceID: 0}
 - Class: 137
   Script: {instanceID: 0}
@@ -85,48 +83,35 @@ SerializeReferenceClassIdentifiers:
   ClassName: EnemyBehaviourState
 - AssemblyName: Unity.Netcode.Components
   ClassName: Unity.Netcode.Components.NetworkAnimator/TransitionStateinfo
-- AssemblyName: Unity.RenderPipelines.Core.Runtime
-  ClassName: UnityEngine.Rendering.BitArray128
 - AssemblyName: Unity.RenderPipelines.HighDefinition.Runtime
-  ClassName: UnityEngine.Rendering.HighDefinition.BoolScalableSettingValue
-- AssemblyName: Unity.RenderPipelines.HighDefinition.Runtime
-  ClassName: UnityEngine.Rendering.HighDefinition.FrameSettings
-- AssemblyName: Unity.RenderPipelines.HighDefinition.Runtime
-  ClassName: UnityEngine.Rendering.HighDefinition.FrameSettingsOverrideMask
-- AssemblyName: Unity.RenderPipelines.HighDefinition.Runtime
-  ClassName: UnityEngine.Rendering.HighDefinition.HDPhysicalCamera
-- AssemblyName: Unity.RenderPipelines.HighDefinition.Runtime
-  ClassName: UnityEngine.Rendering.HighDefinition.IntScalableSettingValue
-- AssemblyName: Unity.RenderPipelines.HighDefinition.Runtime
-  ClassName: UnityEngine.Rendering.HighDefinition.ObsoleteFrameSettings
-- AssemblyName: Unity.RenderPipelines.HighDefinition.Runtime
-  ClassName: UnityEngine.Rendering.HighDefinition.ObsoleteLightLoopSettings
+  ClassName: UnityEngine.Rendering.HighDefinition.LocalVolumetricFogArtistParameters
 Assets:
 - Assets/LethalFauna/SkunkBear/Audio/SkunkBearAmbient.wav
 - Assets/LethalFauna/WatcherHarpy/WatcherHarpy.asset
 - Assets/LethalFauna/SkunkBear/SkunkBear.asset
 - Assets/LethalFauna/SkunkBear/Materials/MapDotRed.mat
-- Assets/LethalFauna/SkunkBear/Animations/Armature_Armature_Armature_Skunbear_WALK.anim
+- Assets/LethalFauna/SkunkBear/OldAnimations/Armature_Armature_Armature_Skunbear_WALK.anim
 - Assets/LethalFauna/SkunkBear/Audio/SkunkBearAngry.wav
-- Assets/LethalFauna/SkunkBear/Animations/Armature_Armature_Armature_SkunkBear_SNIFF.anim
+- Assets/LethalFauna/SkunkBear/OldAnimations/Armature_Armature_Armature_SkunkBear_SNIFF.anim
 - Assets/LethalFauna/WatcherHarpy/WatcherHarpy.prefab
 - Assets/LethalFauna/SkunkBear/Bestiary/SkunkBearTK.asset
-- Assets/LethalFauna/SkunkBear/Animations/Armature_Armature_Armature_SkunkBear_SPRAY.anim
-- Assets/LethalFauna/SkunkBear/SkunkBearAnimController.controller
-- Assets/LethalFauna/SkunkBear/Animations/Armature_Armature_Armature_SkunkBear_BITE.anim
-- Assets/LethalFauna/SkunkBear/Animations/Armature_Armature_Armature_SkunkBear_SWAT.anim
+- Assets/LethalFauna/SkunkBear/OldAnimations/Armature_Armature_Armature_SkunkBear_SPRAY.anim
+- Assets/LethalFauna/SkunkBear/SkunkCubObj.prefab
+- Assets/LethalFauna/SkunkBear/OldAnimations/OldSkunkBearAnimController.controller
+- Assets/LethalFauna/SkunkBear/OldAnimations/Armature_Armature_Armature_SkunkBear_BITE.anim
+- Assets/LethalFauna/SkunkBear/SkunkCub.asset
+- Assets/LethalFauna/SkunkBear/OldAnimations/Armature_Armature_Armature_SkunkBear_SWAT.anim
 - Assets/LethalFauna/WatcherHarpy/Bestiary/WatcherHarpyTN.asset
 - Assets/LethalFauna/SkunkBear/Materials/base.png
-- Assets/LethalFauna/SkunkBear/Animations/Armature_Armature_Armature_SkunkBeat_STAND-UP.anim
+- Assets/LethalFauna/SkunkBear/SkunkBearObj.prefab
+- Assets/LethalFauna/SkunkBear/OldAnimations/Armature_Armature_Armature_SkunkBeat_STAND-UP.anim
 - Assets/LethalFauna/WatcherHarpy/Bestiary/WatcherHarpyTK.asset
 - Assets/LethalFauna/SkunkBear/Materials/base.mat
 - Assets/LethalFauna/SkunkBear/Materials/Material.mat
-- Assets/LethalFauna/SkunkBear/SkunkBearObj.prefab
 - Assets/LethalFauna/WatcherHarpy/Materials/redDot.mat
 - Assets/LethalFauna/SkunkBear/Bestiary/SkunkBearTN.asset
 - Assets/LethalFauna/SkunkBear/Audio/SkunkBearRunning.wav
-- Assets/LethalFauna/SkunkBear/Animations/Armature_Armature_Armature_SkunkBear_RUN.anim
-- Assets/LethalFauna/SkunkBear/Models/SkunkBear.fbx
-- Assets/LethalFauna/SkunkBear/Animations/Armature_Armature_Armature_SkunkBeat_DEATH.anim
+- Assets/LethalFauna/SkunkBear/OldAnimations/Armature_Armature_Armature_SkunkBear_RUN.anim
+- Assets/LethalFauna/SkunkBear/OldAnimations/Armature_Armature_Armature_SkunkBeat_DEATH.anim
 - Assets/LethalFauna/SkunkBear/Audio/SkunkBearWalking.wav
 Dependencies: []
