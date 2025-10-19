@@ -69,9 +69,8 @@ namespace LethalFauna.Enemies
             }
 
 
-            // start in patrolling state for now (sleep not available)
-            SwitchToBehaviourClientRpc((int)State.Patrolling);
-            StartSearch(transform.position);
+            // start in sleeping state
+            SwitchToBehaviourClientRpc((int)State.Sleeping);
         }
 
         bool deathSwitch = false;  // allows for only playing a death anim once
@@ -212,12 +211,13 @@ namespace LethalFauna.Enemies
             switch (currentBehaviourStateIndex)
             {
                 case (int)State.Sleeping:
-                    if (TargetClosestPlayer())
+                    /*if (TargetClosestPlayer())
                     {
                         SwitchToBehaviourState((int)State.Attacking);
                         movingTowardsTargetPlayer = true;
-                    }
-                    break;
+                    }*/
+                    sleepingState();
+                    return;
 
                 case (int)State.Attacking: // requires escalation switch = 3 line
                     attackingState();
@@ -276,6 +276,44 @@ namespace LethalFauna.Enemies
         public void playAngryBearClientRpc() { angryBear.Play(); }
         [ClientRpc]
         public void playStandingBearClientRpc() { bearStandAudio.Play(); }
+
+        // sleepingState variables
+        float wakeupTime = -1;
+        bool awake = false;
+        public void sleepingState()
+        {
+            //Debug.Log("Skunk Bear: sleeping... current time = " + Time.time + " wakeup time = " + wakeupTime);
+            if (wakeupTime == -1)
+            {
+                wakeupTime = (float)(Time.time + rnd.NextDouble() * 300 + 60f);  // sleeps for up to 6 minutes, 1 minute minimum
+            }
+
+            if (Time.time > wakeupTime) { awake = true; }
+
+            // still asleep
+            if (!awake)
+            {
+                //Debug.Log("asleep...");
+                animator.speed = 1;
+                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("SleepAnimation"))
+                {
+                    //Debug.Log("sleep anim set");
+                    DoAnimationClientRpc(-1);
+                    animPlayClientRpc("SleepAnimation");
+                }
+            }
+            else  // awake
+            {
+                //Debug.Log("awake!");
+                DoAnimationClientRpc(1);  // awaken animation and then idle transition
+
+                // when finally in idle animation, transition out of sleep state
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName("IdleAnimation"))
+                {
+                    SwitchToBehaviourClientRpc((int)State.Patrolling);
+                }
+            }
+        }
 
         float biteRange = 5.8f;
         public void attackingState()

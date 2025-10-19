@@ -177,7 +177,7 @@ namespace LethalFauna.Enemies
         bool awake = false;
         public void sleepingState()
         {
-            Debug.Log("Skunk Cub: sleeping... current time = " + Time.time + " wakeup time = " + wakeupTime);
+            //Debug.Log("Skunk Cub: sleeping... current time = " + Time.time + " wakeup time = " + wakeupTime);
             if (wakeupTime == -1)
             {
                 wakeupTime = (float)(Time.time + rnd.NextDouble() * 300 + 60f);  // sleeps for up to 6 minutes, 1 minute minimum
@@ -193,18 +193,18 @@ namespace LethalFauna.Enemies
             // still asleep
             if(!awake)
             {
-                Debug.Log("asleep...");
+                //Debug.Log("asleep...");
                 animator.speed = 1;
                 if(!animator.GetCurrentAnimatorStateInfo(0).IsName("SleepAnimation"))
                 {
-                    Debug.Log("sleep anim set");
+                    //Debug.Log("sleep anim set");
                     DoAnimationClientRpc(-1);
                     animPlayClientRpc("SleepAnimation");
                 }
             }
             else  // awake
             {
-                Debug.Log("awake!");
+                //Debug.Log("awake!");
                 DoAnimationClientRpc(1);  // awaken animation and then idle transition
 
                 // when finally in idle animation, transition out of sleep state
