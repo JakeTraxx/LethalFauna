@@ -59,7 +59,7 @@ namespace LethalFauna.Enemies
 
             // initialize 0-2 cub bear AIS
             cubs = new List<SkunkBearCubAI>();
-            int totalCubs = rnd.Next(1, 4);  // 1-3 cubs. No cubs is currently unsupported
+            int totalCubs = rnd.Next(1, 3);  // 1-2 cubs. No cubs is currently unsupported
             for(int i = 0; i < totalCubs; i++)
             {
                 var cub = Instantiate<GameObject>(bearCubPrefab, this.transform.position, this.transform.rotation);  // create cub
@@ -69,8 +69,8 @@ namespace LethalFauna.Enemies
             }
 
 
-            // start in sleeping state
-            SwitchToBehaviourClientRpc((int)State.Sleeping);
+            // start in patrolling state (sleeping state not available)
+            SwitchToBehaviourClientRpc((int)State.Patrolling);
         }
 
         bool deathSwitch = false;  // allows for only playing a death anim once
@@ -211,14 +211,8 @@ namespace LethalFauna.Enemies
             switch (currentBehaviourStateIndex)
             {
                 case (int)State.Sleeping:
-                    /*if (TargetClosestPlayer())
-                    {
-                        SwitchToBehaviourState((int)State.Attacking);
-                        movingTowardsTargetPlayer = true;
-                    }*/
                     sleepingState();
                     return;
-
                 case (int)State.Attacking: // requires escalation switch = 3 line
                     attackingState();
                     break;
@@ -277,7 +271,7 @@ namespace LethalFauna.Enemies
         [ClientRpc]
         public void playStandingBearClientRpc() { bearStandAudio.Play(); }
 
-        // sleepingState variables
+        // sleeping state is the initial state, currently scrapped until animation is fixed
         float wakeupTime = -1;
         bool awake = false;
         public void sleepingState()
