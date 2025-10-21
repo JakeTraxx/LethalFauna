@@ -3131,13 +3131,6 @@ MonoBehaviour:
     TransitionDuration: 0.25
     TriggerNameHash: -796645620
     TransitionIndex: 1
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -1701686356
-    DestinationState: 1823738765
-    TransitionDuration: 0.25
-    TriggerNameHash: -1009981414
-    TransitionIndex: 2
   m_Animator: {fileID: -7274094856455328959}
 --- !u!1 &7284660633481053067
 GameObject:

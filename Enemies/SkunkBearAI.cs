@@ -3,6 +3,7 @@ using LethalLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using Random = System.Random;
@@ -91,7 +92,7 @@ namespace LethalFauna.Enemies
 
                 if (!deathSwitch || (!animator.GetCurrentAnimatorStateInfo(0).IsName("DeathAnimation") && !animator.GetCurrentAnimatorStateInfo(0).IsName("StayDead")))
                 {
-                    DoAnimationClientRpc(6);
+                    DoAnimationClientRpc(7);
                     animPlayClientRpc("DeathAnimation");
                     deathSwitch = true;
                 }
@@ -144,6 +145,12 @@ namespace LethalFauna.Enemies
             {
                 isEnemyDead = true;
                 animPlayClientRpc("DeathAnimation");
+            }
+            else if (currentBehaviourStateIndex == 6) // attacked while eating, now im mad!
+            {
+                SwitchToBehaviourState((int)State.Attacking);
+                escalationSwitch = 3;
+                playAngryBearClientRpc();
             }
         }
 
@@ -225,6 +232,9 @@ namespace LethalFauna.Enemies
                 case (int)State.Spraying:  // requires escalation switch = 2 v
                     sprayState();
                     break;
+                case (int)State.Eating:
+                    eatingState();
+                    return;
 
                 default:
                     break;
@@ -437,6 +447,25 @@ namespace LethalFauna.Enemies
                 if (RoundManager.Instance.IsServer) { DoAnimationClientRpc(1); }
                 setAnimationSpeedClientRpc(idleAnimationCoefficient);
             }
+
+            // check for any potential food sources nearby
+            List<GameObject> food = FindObjectsOfType<GameObject>().Where(x => x.name == "RedLocustHive(Clone)" || x.GetComponent<DeadBodyInfo>() != null).ToList();
+            float best = 20f;
+            for (int i = 0; i < food.Count; i++)
+            {
+                if (Vector3.Distance(transform.position, food[i].transform.position) < best)
+                {
+                    best = Vector3.Distance(transform.position, food[i].transform.position);
+                    thingToEat = food[i].transform;
+                }
+            }
+            // found a food source, stop patrolling and head to food source
+            if (thingToEat != null)
+            {
+                StopSearch(currentSearch);
+                SetDestinationToPosition(thingToEat.position);
+                SwitchToBehaviourState((int)State.Eating);
+            }
         }
 
         // a semi-aggressive state where the bear targets the player and sprays at
@@ -637,6 +666,45 @@ namespace LethalFauna.Enemies
                 SwitchToBehaviourState((int)State.Patrolling);
                 StartSearch(transform.position);
                 bearStandAudio.Stop();
+            }
+        }
+
+        // found something to eat
+        // the bear will not feel threatened while in this state unless its interrupted
+        Transform thingToEat = null;
+        public void eatingState()
+        {
+            // stand and walk animations and speed
+            if (agent.velocity.magnitude > (agent.speed / 4))
+            {
+                //Debug.Log("Walk Anim Set");
+                if (RoundManager.Instance.IsServer) { DoAnimationClientRpc(2); }
+                setAnimationSpeedClientRpc(agent.velocity.magnitude / walkAnimationCoefficient);
+            }
+            else if (agent.velocity.magnitude <= (agent.speed / 12))
+            {
+                //Debug.Log("Idle Anim Set");
+                if (RoundManager.Instance.IsServer) { DoAnimationClientRpc(1); }
+                setAnimationSpeedClientRpc(idleAnimationCoefficient);
+            }
+
+            // close enough to eating target, begin eating
+            if (Vector3.Distance(transform.position, thingToEat.position) < 3.5f)
+            {
+                moveTowardsDestination = false;
+                agent.speed = 0; // do not move while eating
+                DoAnimationClientRpc(6); // play eating animation
+                setAnimationSpeedClientRpc(idleAnimationCoefficient);
+            }
+
+            // if we finish eating then destroy food and go back to patrol state
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("FinishedEating"))
+            {
+                if (thingToEat.GetComponent<DeadBodyInfo>() != null)
+                    Destroy(thingToEat.gameObject);
+                else
+                    thingToEat.GetComponent<NetworkObject>().Despawn(true);
+                SwitchToBehaviourClientRpc((int)State.Patrolling);
             }
         }
 
