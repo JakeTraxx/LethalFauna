@@ -448,23 +448,26 @@ namespace LethalFauna.Enemies
                 setAnimationSpeedClientRpc(idleAnimationCoefficient);
             }
 
-            // check for any potential food sources nearby
-            List<GameObject> food = FindObjectsOfType<GameObject>().Where(x => x.name == "RedLocustHive(Clone)" || x.GetComponent<DeadBodyInfo>() != null).ToList();
-            float best = 20f;
-            for (int i = 0; i < food.Count; i++)
+            if (Time.time - lastEat > eatCooldown)
             {
-                if (Vector3.Distance(transform.position, food[i].transform.position) < best)
+                // check for any potential food sources nearby
+                List<GrabbableObject> food = FindObjectsOfType<GrabbableObject>().Where(x => x.name == "RedLocustHive(Clone)" || x.GetComponent<DeadBodyInfo>() != null).ToList();
+                float best = 20f;
+                for (int i = 0; i < food.Count; i++)
                 {
-                    best = Vector3.Distance(transform.position, food[i].transform.position);
-                    thingToEat = food[i].transform;
+                    if (!food[i].isHeld && Vector3.Distance(transform.position, food[i].transform.position) < best)
+                    {
+                        best = Vector3.Distance(transform.position, food[i].transform.position);
+                        thingToEat = food[i];
+                    }
                 }
-            }
-            // found a food source, stop patrolling and head to food source
-            if (thingToEat != null)
-            {
-                StopSearch(currentSearch);
-                SetDestinationToPosition(thingToEat.position);
-                SwitchToBehaviourState((int)State.Eating);
+                // found a food source, stop patrolling and head to food source
+                if (thingToEat != null)
+                {
+                    StopSearch(currentSearch);
+                    lastEat = Time.time;
+                    SwitchToBehaviourState((int)State.Eating);
+                }
             }
         }
 
@@ -671,7 +674,9 @@ namespace LethalFauna.Enemies
 
         // found something to eat
         // the bear will not feel threatened while in this state unless its interrupted
-        Transform thingToEat = null;
+        GrabbableObject thingToEat = null;
+        float eatCooldown = 45f;
+        float lastEat = 0f;
         public void eatingState()
         {
             // stand and walk animations and speed
@@ -689,13 +694,21 @@ namespace LethalFauna.Enemies
             }
 
             // close enough to eating target, begin eating
-            if (Vector3.Distance(transform.position, thingToEat.position) < 3.5f)
+            if (Vector3.Distance(transform.position, thingToEat.transform.position) < 3.5f)
             {
                 moveTowardsDestination = false;
                 agent.speed = 0; // do not move while eating
                 DoAnimationClientRpc(6); // play eating animation
                 setAnimationSpeedClientRpc(idleAnimationCoefficient);
+                if (thingToEat.isHeld) // someone took my food away, im mad!
+                {
+                    SwitchToBehaviourState((int)State.Attacking);
+                    escalationSwitch = 3;
+                    playAngryBearClientRpc();
+                }
             }
+            else
+                SetDestinationToPosition(thingToEat.transform.position); // constantly update position of food
 
             // if we finish eating then destroy food and go back to patrol state
             if (animator.GetCurrentAnimatorStateInfo(0).IsName("FinishedEating"))
