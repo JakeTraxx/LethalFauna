@@ -50,7 +50,7 @@ namespace LethalFauna.Enemies
             Patrolling,
             Spraying,
             Standing,
-            Eating
+            Hungry
         }
 
         public void Start()
@@ -146,7 +146,7 @@ namespace LethalFauna.Enemies
                 isEnemyDead = true;
                 animPlayClientRpc("DeathAnimation");
             }
-            else if (currentBehaviourStateIndex == 6) // attacked while eating, now im mad!
+            else
             {
                 SwitchToBehaviourState((int)State.Attacking);
                 escalationSwitch = 3;
@@ -232,8 +232,8 @@ namespace LethalFauna.Enemies
                 case (int)State.Spraying:  // requires escalation switch = 2 v
                     sprayState();
                     break;
-                case (int)State.Eating:
-                    eatingState();
+                case (int)State.Hungry:
+                    hungryState();
                     return;
 
                 default:
@@ -451,11 +451,11 @@ namespace LethalFauna.Enemies
             if (Time.time - lastEat > eatCooldown)
             {
                 // check for any potential food sources nearby
-                List<GrabbableObject> food = FindObjectsOfType<GrabbableObject>().Where(x => x.name == "RedLocustHive(Clone)" || x.GetComponent<DeadBodyInfo>() != null).ToList();
+                List<GameObject> food = FindObjectsOfType<GameObject>().Where(x => x.name == "RedLocustHive(Clone)" || x.GetComponent<RagdollGrabbableObject>() != null).ToList();
                 float best = 20f;
                 for (int i = 0; i < food.Count; i++)
                 {
-                    if (!food[i].isHeld && Vector3.Distance(transform.position, food[i].transform.position) < best)
+                    if (Vector3.Distance(transform.position, food[i].transform.position) < best)
                     {
                         best = Vector3.Distance(transform.position, food[i].transform.position);
                         thingToEat = food[i];
@@ -466,7 +466,7 @@ namespace LethalFauna.Enemies
                 {
                     StopSearch(currentSearch);
                     lastEat = Time.time;
-                    SwitchToBehaviourState((int)State.Eating);
+                    SwitchToBehaviourState((int)State.Hungry);
                 }
             }
         }
@@ -674,10 +674,10 @@ namespace LethalFauna.Enemies
 
         // found something to eat
         // the bear will not feel threatened while in this state unless its interrupted
-        GrabbableObject thingToEat = null;
+        GameObject thingToEat = null;
         float eatCooldown = 45f;
         float lastEat = 0f;
-        public void eatingState()
+        public void hungryState()
         {
             // stand and walk animations and speed
             if (agent.velocity.magnitude > (agent.speed / 4))
@@ -693,6 +693,10 @@ namespace LethalFauna.Enemies
                 setAnimationSpeedClientRpc(idleAnimationCoefficient);
             }
 
+            // check if food has been picked up
+            bool isBody = thingToEat.GetComponent<RagdollGrabbableObject>() != null;
+            bool foodPickedUp = (isBody && thingToEat.GetComponent<RagdollGrabbableObject>().isHeld) || (!isBody && thingToEat.GetComponent<GrabbableObject>().isHeld);
+
             // close enough to eating target, begin eating
             if (Vector3.Distance(transform.position, thingToEat.transform.position) < 3.5f)
             {
@@ -700,7 +704,7 @@ namespace LethalFauna.Enemies
                 agent.speed = 0; // do not move while eating
                 DoAnimationClientRpc(6); // play eating animation
                 setAnimationSpeedClientRpc(idleAnimationCoefficient);
-                if (thingToEat.isHeld) // someone took my food away, im mad!
+                if (foodPickedUp)
                 {
                     SwitchToBehaviourState((int)State.Attacking);
                     escalationSwitch = 3;
@@ -710,14 +714,14 @@ namespace LethalFauna.Enemies
             else
                 SetDestinationToPosition(thingToEat.transform.position); // constantly update position of food
 
-            // if we finish eating then destroy food and go back to patrol state
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("FinishedEating"))
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("FinishedEating")) // if we finish eating animation then go back to patrol state
+                SwitchToBehaviourClientRpc((int)State.Patrolling);
+            else if (thingToEat != null && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .8f) // if we get 80% through eating animation then destroy the food
             {
-                if (thingToEat.GetComponent<DeadBodyInfo>() != null)
-                    Destroy(thingToEat.gameObject);
+                if (thingToEat.GetComponent<RagdollGrabbableObject>() != null)
+                    Destroy(thingToEat);
                 else
                     thingToEat.GetComponent<NetworkObject>().Despawn(true);
-                SwitchToBehaviourClientRpc((int)State.Patrolling);
             }
         }
 

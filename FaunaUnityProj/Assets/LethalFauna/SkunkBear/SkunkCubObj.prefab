@@ -2313,6 +2313,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SkunkBearling6
       objectReference: {fileID: 0}
+    - target: {fileID: 8417361359673230750, guid: 2048c2df176a0744c8b770ab46029dcf,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7f7eb6af2a3f90d4f83e6e5ed85cde8e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: -7146521406498821007, guid: 2048c2df176a0744c8b770ab46029dcf, type: 3}
