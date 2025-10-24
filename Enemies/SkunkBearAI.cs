@@ -805,10 +805,27 @@ namespace LethalFauna.Enemies
                         continue; // Something is blocking the line of sight
                     }
 
-                    // Track the closest visible cub
-                    if (distToCub < bestDist)
+                    // Check for visible players around the current cub
+                    for (int i = 0; i < RoundManager.Instance.playersManager.allPlayerScripts.Length; i++)
                     {
-                        bestDist = distToCub;
+                        Vector3 dirToPly = RoundManager.Instance.playersManager.allPlayerScripts[i].transform.position - bearPos;
+                        float distToPly = dirToPly.magnitude;
+                        Vector3 dirNormalized2 = dirToPly.normalized;
+
+                        if (Vector3.Dot(bearForward, dirNormalized2) > 0.17f)
+                        {
+                            if (!Physics.Raycast(bearPos + Vector3.up * 0.5f, dirNormalized2, distToPly, ~0, QueryTriggerInteraction.Ignore))
+                            {
+                                continue; // Something is blocking the line of sight
+                            }
+
+                            // Track the closest visible cub to a player
+                            float distCubToPly = Vector3.Distance(RoundManager.Instance.playersManager.allPlayerScripts[i].transform.position, cub.transform.position);
+                            if (distCubToPly < bestDist)
+                            {
+                                bestDist = distCubToPly;
+                            }
+                        }
                     }
                 }
             }
