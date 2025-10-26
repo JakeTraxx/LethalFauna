@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LethalFauna.Util
+﻿namespace LethalFauna.Util
 {
     // The constructor will be called during mod loading to allow asset and config loading.
     internal abstract class EnemyHandler<T> where T : EnemyHandler<T>

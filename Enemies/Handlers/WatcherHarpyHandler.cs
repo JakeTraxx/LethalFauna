@@ -1,10 +1,5 @@
 ﻿using LethalFauna.Util;
 using LethalLib.Modules;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LethalFauna.Enemies.Handlers
@@ -15,7 +10,7 @@ namespace LethalFauna.Enemies.Handlers
 
         public WatcherHarpyHandler()
         {
-            Config = new WatcherHarpyConfigHandler(LethalFaunaMod.instance.CreateConfig("watcherharpy"));
+            /*Config = new WatcherHarpyConfigHandler(LethalFaunaMod.instance.CreateConfig("watcherharpy"));
             if (!Config.EnableWatcherHarpy)
                 return;
 
@@ -24,7 +19,7 @@ namespace LethalFauna.Enemies.Handlers
             var watcherHarpyTN = bundle.LoadAsset<TerminalNode>("Assets/LethalFauna/WatcherHarpy/Bestiary/WatcherHarpyTN.asset");
             var watcherHarpyTK = bundle.LoadAsset<TerminalKeyword>("Assets/LethalFauna/WatcherHarpy/Bestiary/WatcherHarpyTK.asset");
             NetworkPrefabs.RegisterNetworkPrefab(wh.enemyPrefab);
-            LethalLib.Modules.Enemies.RegisterEnemy(wh, 100, Levels.LevelTypes.All, watcherHarpyTN, watcherHarpyTK);
+            LethalLib.Modules.Enemies.RegisterEnemy(wh, 100, Levels.LevelTypes.All, watcherHarpyTN, watcherHarpyTK);*/
         }
     }
 }

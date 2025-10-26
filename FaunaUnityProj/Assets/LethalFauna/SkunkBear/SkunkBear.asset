@@ -68,7 +68,7 @@ MonoBehaviour:
   MaxCount: 3
   numberSpawned: 0
   isOutsideEnemy: 1
-  isDaytimeEnemy: 0
+  isDaytimeEnemy: 1
   normalizedTimeInDayToLeave: 0.5
   stunTimeMultiplier: 4
   doorSpeedMultiplier: 0.25
