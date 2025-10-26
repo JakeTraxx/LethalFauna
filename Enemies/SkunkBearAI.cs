@@ -740,7 +740,26 @@ namespace LethalFauna.Enemies
             // assess threat to cubs
             // suggested improvement: add radius and/or sight requirement for threat level to change
 
-            provokePoints += 12 / getClosestDistanceToCubsKnown();
+            // determine if provoke points should be less due to a crouching player
+            float moreProvokedValCub = 18f;
+            float lessProvokedValCub = 12f;
+            float moreProvokedValBear = 18f;
+            float lessProvokedValBear = 12f;
+            float cubDistance = getClosestDistanceToCubsKnown();
+            PlayerControllerB plyNearBear = getClosestPlayerToGO(this.gameObject);
+            if (cubDistance < 0)
+            {
+                moreProvokedValCub = 9f;
+                lessProvokedValCub = 6f;
+                cubDistance *= -1;
+            }
+            if (plyNearBear.isCrouching)
+            {
+                moreProvokedValBear = 9f;
+                lessProvokedValBear = 6f;
+            }
+
+            provokePoints += lessProvokedValCub / cubDistance;
             for (int i = 0; i < cubs.Count; i++)
             {
                 var cub = cubs[i];
@@ -749,18 +768,18 @@ namespace LethalFauna.Enemies
                     // uses closest distance to cubs known unless player is within certain radius
                     // of the bear. If they are within this radius the bear assumes the player
                     // is causing the panic.
-                    if (Vector3.Distance(getClosestPlayerToGO(this.gameObject).transform.position, transform.position) < 10f)
+                    if (Vector3.Distance(plyNearBear.transform.position, transform.position) < 10f)
                     {
-                        provokePoints += 18 / (Vector3.Distance(getClosestPlayerToGO(this.gameObject).transform.position, transform.position) + 1.5f);
+                        provokePoints += moreProvokedValBear / (Vector3.Distance(plyNearBear.transform.position, transform.position) + 1.5f);
                     }
                     else
                     {
-                        provokePoints += 18 / (getClosestDistanceToCubsKnown() + 1.5f);
+                        provokePoints += moreProvokedValCub / (cubDistance + 1.5f);
                     }
                 }
                 else
                 {
-                    provokePoints += 12 / (getClosestDistanceToCubsKnown() + 1.5f);
+                    provokePoints += lessProvokedValCub / (cubDistance + 1.5f);
                 }
             }
 
@@ -769,11 +788,11 @@ namespace LethalFauna.Enemies
             if (currentBehaviourStateIndex != (int)State.Spraying)
             {
                 if (cubs.Count == 0) {
-                    provokePoints += 12f / (Vector3.Distance(getClosestPlayerToGO(this.gameObject).transform.position, transform.position) + 1.5f);
+                    provokePoints += moreProvokedValBear / (Vector3.Distance(plyNearBear.transform.position, transform.position) + 1.5f);
                 }
                 else
                 {
-                    provokePoints += 12f / (Vector3.Distance(getClosestPlayerToGO(this.gameObject).transform.position, transform.position) + 1.5f);
+                    provokePoints += lessProvokedValBear / (Vector3.Distance(plyNearBear.transform.position, transform.position) + 1.5f);
                 }
             }
 
@@ -789,6 +808,7 @@ namespace LethalFauna.Enemies
             float bestDist = 9999f;
             Vector3 bearPos = transform.position;
             Vector3 bearForward = transform.forward;
+            PlayerControllerB player = null;
 
             foreach (var cub in cubs)
             {
@@ -824,13 +844,14 @@ namespace LethalFauna.Enemies
                             if (distCubToPly < bestDist)
                             {
                                 bestDist = distCubToPly;
+                                player = RoundManager.Instance.playersManager.allPlayerScripts[i];
                             }
                         }
                     }
                 }
             }
 
-            return bestDist;
+            return player != null && player.isCrouching ? -1 * bestDist : bestDist; // Return the distance as negative to indicate the player closest to any cub is crouching
         }
 
         public PlayerControllerB getClosestPlayerToGO(GameObject GO)
