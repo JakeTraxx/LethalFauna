@@ -15,7 +15,7 @@ MonoBehaviour:
   word: Skunk Bear
   isVerb: 0
   compatibleNouns: []
-  specialKeywordResult: {fileID: 11400000, guid: 63ac6c9736d62da3ba6e7f2b6ed6729f,
+  specialKeywordResult: {fileID: 11400000, guid: 298a33fdd2c44474bb43764d8fe1691b,
     type: 2}
   defaultVerb: {fileID: 11400000}
   accessTerminalObjects: 0
