@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using BepInEx.Logging;
 using HarmonyLib;
 using LethalFauna.Util;
 using System;
@@ -21,6 +22,7 @@ namespace LethalFauna
         readonly Harmony harmony = new Harmony(mGUID);
 
         internal static LethalFaunaMod instance;
+        internal static ManualLogSource log;
         internal static AssetBundle bundle;
 
         void Awake()
@@ -28,11 +30,14 @@ namespace LethalFauna
             if (instance == null)
                 instance = this;
 
+            log = Logger;
+
             string modLocation = instance.Info.Location.TrimEnd("LethalFauna.dll".ToCharArray());
             bundle = AssetBundle.LoadFromFile(modLocation + "lethalfauna");
             if (bundle == null)
             {
-                instance.Logger.LogError("Unable to locate the asset file! Enemies will not spawn.");
+                instance.Logger.LogError("Unable to locate the asset file!");
+                instance.Logger.LogInfo($"{mName}-{mVersion} load failed!");
                 return;
             }
 

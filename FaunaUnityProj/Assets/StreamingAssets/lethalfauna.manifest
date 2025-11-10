@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 1220801688
+CRC: 261299235
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 374a3b516c6639b15fe723976f93d32d
+    Hash: 175619e2f370cc3ef6f916fd9e59e0d5
   TypeTreeHash:
     serializedVersion: 2
-    Hash: bc6dcbe279214ca13de83cddd3010749
+    Hash: 722d69536006f127b9820ba0eb80942f
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 374a3b516c6639b15fe723976f93d32d
+    Hash: 175619e2f370cc3ef6f916fd9e59e0d5
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -81,6 +81,10 @@ SerializeReferenceClassIdentifiers:
   ClassName: AISearchRoutine
 - AssemblyName: Assembly-CSharp
   ClassName: EnemyBehaviourState
+- AssemblyName: Assembly-CSharp
+  ClassName: EnemySize
+- AssemblyName: Assembly-CSharp
+  ClassName: NavSizeLimit
 - AssemblyName: Unity.Netcode.Components
   ClassName: Unity.Netcode.Components.NetworkAnimator/TransitionStateinfo
 - AssemblyName: Unity.RenderPipelines.HighDefinition.Runtime
