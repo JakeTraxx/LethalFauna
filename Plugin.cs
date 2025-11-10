@@ -17,7 +17,7 @@ namespace LethalFauna
     {
         const string mGUID = "eXish.LethalFauna";
         const string mName = "LethalFauna";
-        const string mVersion = "1.0.0";
+        const string mVersion = "0.1.0";
 
         readonly Harmony harmony = new Harmony(mGUID);
 

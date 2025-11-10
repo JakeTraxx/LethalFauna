@@ -1,6 +1,7 @@
 ﻿using GameNetcodeStuff;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
@@ -328,7 +329,8 @@ namespace LethalFauna.Enemies
         {
             float lowestDist = 99999f;
             PlayerControllerB closestPlayer = null;
-            foreach(PlayerControllerB ply in RoundManager.Instance.playersManager.allPlayerScripts)
+            PlayerControllerB[] allControlledPlayers = RoundManager.Instance.playersManager.allPlayerScripts.Where(x => x.isPlayerControlled).ToArray();
+            foreach(PlayerControllerB ply in allControlledPlayers)
             {
                 var dist = Vector3.Distance(transform.position, ply.transform.position);
                 if (dist < lowestDist )
@@ -616,8 +618,8 @@ namespace LethalFauna.Enemies
         {
             if(playerTarget != null && Vector3.Distance(playerTarget.transform.position, transform.position) < curiousRadius * interestLevel) { return playerTarget; }
 
-            var m = RoundManager.Instance;
-            foreach(PlayerControllerB player in m.playersManager.allPlayerScripts)
+            PlayerControllerB[] allControlledPlayers = RoundManager.Instance.playersManager.allPlayerScripts.Where(x => x.isPlayerControlled).ToArray();
+            foreach(PlayerControllerB player in allControlledPlayers)
             {
                 if(Vector3.Distance(player.transform.position, transform.position) < curiousRadius * interestLevel)
                 {
@@ -651,7 +653,7 @@ namespace LethalFauna.Enemies
 
             if(enemyHP <= 0)
             {
-                isEnemyDead = true;
+                KillEnemyOnOwnerClient(false);
                 animPlayClientRpc("DeathAnimation");
             }
         }

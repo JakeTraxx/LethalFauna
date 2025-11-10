@@ -135,16 +135,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 1924606412
       objectReference: {fileID: 0}
-    - target: {fileID: 2250227146802219193, guid: a63a40ffe6a63e04a9a874f59a433f56,
-        type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2880500055971806987, guid: a63a40ffe6a63e04a9a874f59a433f56,
-        type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3292720232919189125, guid: a63a40ffe6a63e04a9a874f59a433f56,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -195,16 +185,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3941114536138529377, guid: a63a40ffe6a63e04a9a874f59a433f56,
-        type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6489853130016872347, guid: a63a40ffe6a63e04a9a874f59a433f56,
-        type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7261056683159870519, guid: a63a40ffe6a63e04a9a874f59a433f56,
         type: 3}
       propertyPath: m_Name
@@ -227,11 +207,6 @@ PrefabInstance:
         type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3578897256
-      objectReference: {fileID: 0}
-    - target: {fileID: 2549223574769651329, guid: 02bedfd3708d99d4fb4dbc5827921429,
-        type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3292720232919189125, guid: 02bedfd3708d99d4fb4dbc5827921429,
         type: 3}

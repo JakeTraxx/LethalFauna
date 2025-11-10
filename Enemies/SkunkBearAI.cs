@@ -118,10 +118,10 @@ namespace LethalFauna.Enemies
                     }
                 }
 
-            Vector3 lookDir = (closestPly.transform.position - transform.position).normalized;
-            lookDir.y = 0;  // flatten to avoid head tilt
-            if (lookDir != Vector3.zero)
-                transform.rotation = Quaternion.LookRotation(lookDir);
+                Vector3 lookDir = (closestPly.transform.position - transform.position).normalized;
+                lookDir.y = 0;  // flatten to avoid head tilt
+                if (lookDir != Vector3.zero)
+                    transform.rotation = Quaternion.LookRotation(lookDir);
             }
 
             footstepSounds();
@@ -142,7 +142,7 @@ namespace LethalFauna.Enemies
 
             if (enemyHP <= 0)
             {
-                isEnemyDead = true;
+                KillEnemyOnOwnerClient(false);
                 animPlayClientRpc("DeathAnimation");
             }
             else
@@ -678,19 +678,11 @@ namespace LethalFauna.Enemies
         float lastEat = 0f;
         public void hungryState()
         {
-            // stand and walk animations and speed
-            if (agent.velocity.magnitude > (agent.speed / 4))
-            {
-                //Debug.Log("Walk Anim Set");
-                if (RoundManager.Instance.IsServer) { DoAnimationClientRpc(2); }
-                setAnimationSpeedClientRpc(agent.velocity.magnitude / walkAnimationCoefficient);
-            }
-            else if (agent.velocity.magnitude <= (agent.speed / 12))
-            {
-                //Debug.Log("Idle Anim Set");
-                if (RoundManager.Instance.IsServer) { DoAnimationClientRpc(1); }
-                setAnimationSpeedClientRpc(idleAnimationCoefficient);
-            }
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("FinishedEating")) // when eating animation is finished then go back to patrol state
+                SwitchToBehaviourClientRpc((int)State.Patrolling);
+
+            // if food is destroyed then just wait for animation to finish
+            if (thingToEat == null) return;
 
             // check if food has been picked up
             bool isBody = thingToEat.GetComponent<RagdollGrabbableObject>() != null;
@@ -711,11 +703,25 @@ namespace LethalFauna.Enemies
                 }
             }
             else
-                SetDestinationToPosition(thingToEat.transform.position); // constantly update position of food
+            {
+                // stand and walk animations and speed
+                if (agent.velocity.magnitude > (agent.speed / 4))
+                {
+                    //Debug.Log("Walk Anim Set");
+                    if (RoundManager.Instance.IsServer) { DoAnimationClientRpc(2); }
+                    setAnimationSpeedClientRpc(agent.velocity.magnitude / walkAnimationCoefficient);
+                }
+                else if (agent.velocity.magnitude <= (agent.speed / 12))
+                {
+                    //Debug.Log("Idle Anim Set");
+                    if (RoundManager.Instance.IsServer) { DoAnimationClientRpc(1); }
+                    setAnimationSpeedClientRpc(idleAnimationCoefficient);
+                }
 
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("FinishedEating")) // if we finish eating animation then go back to patrol state
-                SwitchToBehaviourClientRpc((int)State.Patrolling);
-            else if (thingToEat != null && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .8f) // if we get 80% through eating animation then destroy the food
+                SetDestinationToPosition(thingToEat.transform.position); // constantly update position of food
+            }
+
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("EatAnimation") && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .8f) // if we get 80% through eating animation then destroy the food
             {
                 if (thingToEat.GetComponent<RagdollGrabbableObject>() != null)
                     Destroy(thingToEat);
@@ -825,9 +831,10 @@ namespace LethalFauna.Enemies
                     }
 
                     // Check for visible players around the current cub
-                    for (int i = 0; i < RoundManager.Instance.playersManager.allPlayerScripts.Length; i++)
+                    PlayerControllerB[] allControlledPlayers = RoundManager.Instance.playersManager.allPlayerScripts.Where(x => x.isPlayerControlled).ToArray();
+                    for (int i = 0; i < allControlledPlayers.Length; i++)
                     {
-                        Vector3 dirToPly = RoundManager.Instance.playersManager.allPlayerScripts[i].transform.position - bearPos;
+                        Vector3 dirToPly = allControlledPlayers[i].transform.position - bearPos;
                         float distToPly = dirToPly.magnitude;
                         Vector3 dirNormalized2 = dirToPly.normalized;
 
@@ -839,11 +846,11 @@ namespace LethalFauna.Enemies
                             }
 
                             // Track the closest visible cub to a player
-                            float distCubToPly = Vector3.Distance(RoundManager.Instance.playersManager.allPlayerScripts[i].transform.position, cub.transform.position);
+                            float distCubToPly = Vector3.Distance(allControlledPlayers[i].transform.position, cub.transform.position);
                             if (distCubToPly < bestDist)
                             {
                                 bestDist = distCubToPly;
-                                player = RoundManager.Instance.playersManager.allPlayerScripts[i];
+                                player = allControlledPlayers[i];
                             }
                         }
                     }
@@ -855,12 +862,12 @@ namespace LethalFauna.Enemies
 
         public PlayerControllerB getClosestPlayerToGO(GameObject GO)
         {
-            var m = RoundManager.Instance;
             var closestDist = 10000f;
             PlayerControllerB closestPly = null;
-            for(int i = 0; i < m.playersManager.allPlayerScripts.Length; i++)
+            PlayerControllerB[] allControlledPlayers = RoundManager.Instance.playersManager.allPlayerScripts.Where(x => x.isPlayerControlled).ToArray();
+            for(int i = 0; i < allControlledPlayers.Length; i++)
             {
-                var ply = m.playersManager.allPlayerScripts[i];
+                var ply = allControlledPlayers[i];
                 var dist = Vector3.Distance(ply.transform.position, GO.transform.position);
                 if (dist < closestDist)
                 {
