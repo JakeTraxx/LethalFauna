@@ -1,39 +1,41 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace LethalFauna.Enemies
 {
     class WatcherHarpyAI : EnemyAI
     {
-        public Transform harpyHead;
+        public GameObject rotationObj;
+
+        GameObject targetTree;
+        GameObject localRotObj;
+
+        bool changeTree;
 
         enum State
         {
-            GoingToBranch,
-            LookForPrey,
-            AttackPrey
+            Traveling,
+            Circling,
+            Perched,
+            Attacking
         }
 
         public override void Start()
         {
             base.Start();
 
-            currentBehaviourStateIndex = (int)State.LookForPrey;
-            transform.position += new Vector3(0, 5, 0);
+            // Start in travel state
+            currentBehaviourStateIndex = (int)State.Traveling;
         }
 
         public override void Update()
         {
             base.Update();
-            
-            if (targetPlayer != null && !targetPlayer.isPlayerDead)
+
+            // If in the circling state, then rotate the rotation object
+            if (currentBehaviourStateIndex == (int)State.Circling)
             {
-                if (PreyUnderMe())
-                {
-                    //SwitchToBehaviourClientRpc((int)State.AttackPrey);
-                    targetPlayer.DamagePlayer(100);
-                }
-                else
-                    harpyHead.LookAt(targetPlayer.gameplayCamera.transform.position);
+                localRotObj.transform.localEulerAngles += new Vector3(0, 0.1f, 0) * Time.deltaTime;
             }
         }
 
@@ -43,8 +45,12 @@ namespace LethalFauna.Enemies
 
             switch (currentBehaviourStateIndex)
             {
-                case (int)State.LookForPrey:
-                    TargetClosestPlayer();
+                case (int)State.Traveling:
+                    TravelState();
+                    break;
+
+                case (int)State.Circling:
+                    CircleState();
                     break;
 
                 default:
@@ -52,15 +58,46 @@ namespace LethalFauna.Enemies
             }
         }
 
-        private bool PreyUnderMe()
+        public void CircleState()
         {
-            float[] xBounds = { transform.position.x - 5, transform.position.x + 5 };
-            float[] zBounds = { transform.position.z - 5, transform.position.z + 5 };
-            if (targetPlayer.transform.position.x > xBounds[0] && targetPlayer.transform.position.x < xBounds[1])
-                if (targetPlayer.transform.position.z > zBounds[0] && targetPlayer.transform.position.z < zBounds[1])
-                    if (targetPlayer.transform.position.y < transform.position.y)
-                        return true;
-            return false;
+
+        }
+
+        public void TravelState()
+        {
+            // If the target tree needs to change then do so
+            if (changeTree)
+            {
+                // If a target tree was chosen before, destroy the rotation object first
+                if (localRotObj != null)
+                    Destroy(localRotObj);
+
+                // Find a tree to target
+                GameObject[] usableTrees = GameObject.FindGameObjectsWithTag("Wood").Where(x => x.name.StartsWith("tree")).ToArray();
+                if (usableTrees.Length == 0)
+                {
+                    // Spawn a tree
+                }
+                else
+                {
+                    targetTree = usableTrees[Random.Range(0, usableTrees.Length)];
+                    localRotObj = Instantiate(rotationObj, targetTree.transform);
+                }
+
+                changeTree = false;
+            }
+
+            // Set destination to the target tree's rotation point
+            Vector3 rotPoint = localRotObj.transform.GetChild(0).position;
+            destination = rotPoint;
+            moveTowardsDestination = true;
+
+            // Reached destination, begin circling
+            if (Vector3.Distance(transform.position, rotPoint) < 0.1f)
+            {
+                moveTowardsDestination = false;
+                currentBehaviourStateIndex = (int)State.Circling;
+            }
         }
     }
 }

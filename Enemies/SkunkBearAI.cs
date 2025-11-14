@@ -118,10 +118,13 @@ namespace LethalFauna.Enemies
                     }
                 }
 
-                Vector3 lookDir = (closestPly.transform.position - transform.position).normalized;
-                lookDir.y = 0;  // flatten to avoid head tilt
-                if (lookDir != Vector3.zero)
-                    transform.rotation = Quaternion.LookRotation(lookDir);
+                if (closestPly != null)
+                {
+                    Vector3 lookDir = (closestPly.transform.position - transform.position).normalized;
+                    lookDir.y = 0;  // flatten to avoid head tilt
+                    if (lookDir != Vector3.zero)
+                        transform.rotation = Quaternion.LookRotation(lookDir);
+                }
             }
 
             footstepSounds();
